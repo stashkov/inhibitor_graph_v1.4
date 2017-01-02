@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import string
 import math
 
-# G = nx.barabasi_albert_graph(5, 1, seed=666)
-
 
 def color_negative_and_positive_nodes(graph):
     red, white = [], []
@@ -49,13 +47,8 @@ def my_draw_graph(G):
     nx.draw_networkx_labels(G, pos, labels, font_size=15)
 
 
-# def is_negation_of_node_in_graph(graph, u, attr_dict):
-#     return (u, {'mark': not (attr_dict[u])}) in graph.nodes(data=True)
-
-
 def add_edge(graph, u, v, attr_dict):
     visited = set(graph.nodes())
-    print u, v
     if u in visited and v not in visited:
         graph.add_node(v, mark=attr_dict[v])
         graph.add_edge(u, v, weight=0)
@@ -104,4 +97,4 @@ if __name__ == '__main__':
     my_draw_graph(G2)
 
 
-plt.show()
+    plt.show()
