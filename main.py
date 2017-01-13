@@ -2,6 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import string
 import math
+import random
 
 
 def color_negative_and_positive_nodes(graph):
@@ -19,10 +20,13 @@ def color_negative_and_positive_nodes(graph):
 
 def assign_labels_to_nodes(graph):
     # labels = dict(zip(range(1, len(graph.nodes()) + 1), string.ascii_uppercase))
-    labels = {i: str(i) for i in range(1, len(graph.nodes())+1)}
+    labels = {i: str(i) for i in range(1, len(graph.nodes())+1)}  # TODO figure this out +1 for len ?
+    # labels = {i: str(i) for i in range(len(graph.nodes()))}
+    print labels, len(labels)
     if 'mark' in graph.nodes(data=True)[0][1].keys():
         for k, v in labels.iteritems():
             labels[k] += ' \n' + str(graph.node[k]['mark'])
+    print labels, len(labels)
     return labels
 
 
@@ -73,8 +77,17 @@ def generate_graph():
     G.add_edge(4, 5, weight=0)
     return G
 
+
+def generate_barabasi(n):
+    G = nx.barabasi_albert_graph(n, 2)
+    for u, v, d in G.edges(data=True):
+        d['weight'] = random.choice([0]*90 + [1]*10)  # 2% chance of an inhibited edge
+    return G
+
 if __name__ == '__main__':
     G = generate_graph()
+    # G = generate_barabasi(20)
+
 
     G1 = nx.DiGraph()
     G2 = nx.DiGraph()
@@ -89,11 +102,11 @@ if __name__ == '__main__':
 
 
     plt.figure(1)
-    plt.subplot(311)
+    plt.subplot(131)
     my_draw_graph(G)
-    plt.subplot(312)
+    plt.subplot(132)
     my_draw_graph(G1)
-    plt.subplot(313)
+    plt.subplot(133)
     my_draw_graph(G2)
 
 
