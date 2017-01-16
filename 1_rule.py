@@ -27,14 +27,12 @@ def my_draw_graph(G):
     nx.draw_networkx_labels(G, pos, labels, font_size=15)
 
 
-
-
 def generate_graph():
     G = nx.DiGraph()
     G.add_edge(1, 2, weight=0)
     G.add_edge(3, 2, weight=1)
     G.add_edge(2, 4, weight=0)
-    # G.add_edge(4, 5, weight=0)
+    G.add_edge(4, 5, weight=1)
     return G
 
 
@@ -45,11 +43,19 @@ def generate_barabasi(n):
         d['weight'] = random.choice([0]*(100-percent_chance_of_inhibited_edge) + [1]*percent_chance_of_inhibited_edge)
     return G
 
+
+def remove_out_degree_zero_nodes(graph):
+    for v, d in graph.nodes(data=True):
+        if graph.in_degree(v) == graph.out_degree(v) == 1 and graph.predecessors(v) == graph.successors(v):
+            graph.remove_node(v)
+
+
 if __name__ == '__main__':
-    # G = generate_graph()
-    G = generate_barabasi(20)
+    # G = generate_barabasi(20)
+    G = generate_graph()
 
     G1 = nx.DiGraph()
+    next_node = max(G.nodes())
     for u, v, d in G.edges(data=True):
         if d['weight'] == 0:
             G1.add_node(u, label=u, flag=True)
@@ -58,11 +64,14 @@ if __name__ == '__main__':
         if d['weight'] == 1:
             G1.add_node(u, label=u, flag=True)
             G1.add_node(v, label=v, flag=True)
-            w = max(G.nodes()) + 1
+            next_node += 1
+            w = next_node
             G1.add_node(w, label=v, flag=False)
             G1.add_edge(u, w, weight=0)
             G1.add_edge(v, w, weight=0)  # self loop
             G1.add_edge(w, v, weight=0)  # self loop
+
+
 
     plt.figure(1)
     plt.subplot(111)
