@@ -15,8 +15,8 @@ def my_draw_graph(G):
     labels = dict()
     white_nodes, red_nodes = [], []
     for n, d in G.nodes(data=True):
-        labels[n] = str(d['label']) + '\n' + str(d['flag'])
-        if d['flag'] is True:
+        labels[n] = str(d.get('label', n)) + '\n' + str(d.get('flag', ''))
+        if 'flag' not in d.keys() or d['flag'] is True:
             white_nodes.append(n)
         else:
             red_nodes.append(n)
@@ -33,12 +33,13 @@ def generate_graph():
     G.add_edge(3, 2, weight=1)
     G.add_edge(2, 4, weight=0)
     G.add_edge(4, 5, weight=1)
+    G.add_edge(6, 5, weight=1)
     return G
 
 
 def generate_barabasi(n):
     G = nx.barabasi_albert_graph(n, 2)
-    percent_chance_of_inhibited_edge = 10
+    percent_chance_of_inhibited_edge = 40
     for u, v, d in G.edges(data=True):
         d['weight'] = random.choice([0]*(100-percent_chance_of_inhibited_edge) + [1]*percent_chance_of_inhibited_edge)
     return G
@@ -51,9 +52,10 @@ def remove_out_degree_zero_nodes(graph):
 
 
 if __name__ == '__main__':
-    # G = generate_barabasi(20)
+    # G = generate_barabasi(100)
     G = generate_graph()
 
+    added_negative_nodes = set()
     G1 = nx.DiGraph()
     next_node = max(G.nodes())
     for u, v, d in G.edges(data=True):
@@ -64,18 +66,24 @@ if __name__ == '__main__':
         if d['weight'] == 1:
             G1.add_node(u, label=u, flag=True)
             G1.add_node(v, label=v, flag=True)
-            next_node += 1
-            w = next_node
-            G1.add_node(w, label=v, flag=False)
-            G1.add_edge(u, w, weight=0)
-            G1.add_edge(v, w, weight=0)  # self loop
-            G1.add_edge(w, v, weight=0)  # self loop
+            if v not in added_negative_nodes:
+                added_negative_nodes.add(v)
+                next_node += 1
+                w = next_node
+                G1.add_node(w, label=v, flag=False)
+                G1.add_edge(u, w, weight=0)
+                G1.add_edge(v, w, weight=0)  # self loop
+                G1.add_edge(w, v, weight=0)  # self loop
+            else:
+                G1.add_edge(u, v, weight=0)
 
-
+    remove_out_degree_zero_nodes(G1)
 
     plt.figure(1)
-    plt.subplot(111)
+    plt.subplot(121)
     my_draw_graph(G1)
+    plt.subplot(122)
+    my_draw_graph(G)
 
     plt.show()
 
