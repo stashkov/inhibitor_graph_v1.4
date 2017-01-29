@@ -53,7 +53,10 @@ def remove_out_degree_zero_nodes(graph):
 
 if __name__ == '__main__':
     # G = generate_barabasi(100)
-    G = generate_graph()
+    # G = generate_graph()
+    # G = generate_graph_test_loops()
+    import examples
+    G = examples.example30()
 
     added_negative_nodes = set()
     G1 = nx.DiGraph()
