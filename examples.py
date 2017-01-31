@@ -92,3 +92,23 @@ def generate_graph_test_loops():
     G.add_edge(3, 4, weight=0)
     G.add_edge(3, 2, weight=1)
     return G
+
+
+def composite_graph_1():
+    G = nx.DiGraph()
+    G.add_edge(1, 4, weight=0)
+    G.add_edge(2, 4, weight=0)
+    G.add_edge(3, 4, weight=0)
+    G.add_edge(4, 5, weight=0)
+    G.add_edge(4, 6, weight=0)
+    G.add_edge(7, 6, weight=0)
+    G.add_edge(6, 8, weight=0)
+    return G
+
+
+def composite_graph_1():
+    G = nx.DiGraph()
+    G.add_edge(1, 3, weight=0)
+    G.add_edge(1, 4, weight=0)
+    G.add_edge(2, 4, weight=0)
+    return G
