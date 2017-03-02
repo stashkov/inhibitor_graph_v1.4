@@ -1,8 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import string
 import math
-import random
+import examples
 
 """
 if u -> v is inhibited, we duplicate v to bar{v} and redirect u to bar{v}
@@ -27,66 +26,100 @@ def my_draw_graph(G):
     nx.draw_networkx_labels(G, pos, labels, font_size=15)
 
 
-def generate_graph():
-    G = nx.DiGraph()
-    G.add_edge(1, 2, weight=0)
-    G.add_edge(3, 2, weight=1)
-    G.add_edge(2, 4, weight=0)
-    G.add_edge(4, 5, weight=1)
-    G.add_edge(6, 5, weight=1)
-    return G
-
-
-def generate_barabasi(n):
-    G = nx.barabasi_albert_graph(n, 2)
-    percent_chance_of_inhibited_edge = 40
-    for u, v, d in G.edges(data=True):
-        d['weight'] = random.choice([0]*(100-percent_chance_of_inhibited_edge) + [1]*percent_chance_of_inhibited_edge)
-    return G
-
-
 def remove_out_degree_zero_nodes(graph):
     for v, d in graph.nodes(data=True):
         if graph.in_degree(v) == graph.out_degree(v) == 1 and graph.predecessors(v) == graph.successors(v):
             graph.remove_node(v)
 
 
-if __name__ == '__main__':
-    # G = generate_barabasi(100)
-    # G = generate_graph()
-    # G = generate_graph_test_loops()
-    import examples
-    G = examples.example30()
+def contract_nodes_candidates(graph):
+    d = dict()
+    for u in graph.nodes():
+        # print graph.predecessors(u), len(graph.predecessors(u))
+        predecessors = graph.predecessors(u)
+        if len(predecessors) > 1:
+            d[u] = predecessors
+    return d
 
+
+def contract_nodes_candidates_in_modified_graph(graph):
+    nodes = dict()
+    for u, d in graph.nodes(data=True):
+        # print graph.predecessors(u), len(graph.predecessors(u))
+        print u, d, graph.node[u]['label']
+
+        predecessors = graph.predecessors(u)
+        node_negation = graph.node[u]['label']
+        if node_negation in predecessors:
+            predecessors.remove(node_negation)
+
+        if len(predecessors) > 1:
+            nodes[u] = predecessors
+    return nodes
+
+
+def replace_inhibited_edges_with_negation_of_node(input_graph, output_graph):
     added_negative_nodes = set()
-    G1 = nx.DiGraph()
-    next_node = max(G.nodes())
-    for u, v, d in G.edges(data=True):
+    next_node = max(input_graph.nodes())
+    for u, v, d in input_graph.edges(data=True):
         if d['weight'] == 0:
-            G1.add_node(u, label=u, flag=True)
-            G1.add_node(v, label=v, flag=True)
-            G1.add_edge(u, v, weight=0)
+            output_graph.add_node(u, label=u, flag=True)
+            output_graph.add_node(v, label=v, flag=True)
+            output_graph.add_edge(u, v, weight=0)
         if d['weight'] == 1:
-            G1.add_node(u, label=u, flag=True)
-            G1.add_node(v, label=v, flag=True)
+            output_graph.add_node(u, label=u, flag=True)
+            output_graph.add_node(v, label=v, flag=True)
             if v not in added_negative_nodes:
                 added_negative_nodes.add(v)
                 next_node += 1
                 w = next_node
-                G1.add_node(w, label=v, flag=False)
-                G1.add_edge(u, w, weight=0)
-                G1.add_edge(v, w, weight=0)  # self loop
-                G1.add_edge(w, v, weight=0)  # self loop
+                output_graph.add_node(w, label=v, flag=False)
+                output_graph.add_edge(u, w, weight=0)
+                output_graph.add_edge(v, w, weight=0)  # self loop
+                output_graph.add_edge(w, v, weight=0)  # self loop
             else:
-                G1.add_edge(u, v, weight=0)
+                output_graph.add_edge(u, v, weight=0)
+    return output_graph
+
+
+if __name__ == '__main__':
+    # G = generate_barabasi(100)
+    G = examples.generate_graph()
+    # G = generate_graph_test_loops()
+
+    # G = examples.example30()
+    # G = examples.generate_graph()
+
+    G1 = nx.DiGraph()
+    G1 = replace_inhibited_edges_with_negation_of_node(input_graph=G, output_graph=G1)
 
     remove_out_degree_zero_nodes(G1)
 
+    contract_nodes_candidates = contract_nodes_candidates_in_modified_graph(G1)
+    print contract_nodes_candidates
+    #
+    # G2 = copy.deepcopy(G1)
+    #
+    # for k, v in contract_nodes_candidates.iteritems():
+    #     G2 = nx.contracted_nodes(G2, v[0], v[1])
+    #
+    # for node in G2.nodes():
+    #     # print 'test', G2.node[node]['contraction']
+    #     for attrib in G2.node[node]:
+    #         print G2.node[node], 'before', node
+    #         if type(G2.node[node][attrib]) == dict:
+    #             print node, 'oO'
+    #             print G2.node[node]
+    #
+    # print G2.nodes()
+
     plt.figure(1)
-    plt.subplot(121)
+    plt.subplot(131)
     my_draw_graph(G1)
-    plt.subplot(122)
+    plt.subplot(132)
     my_draw_graph(G)
+    plt.subplot(133)
+    # my_draw_graph(G2)
 
     plt.show()
 

@@ -112,3 +112,33 @@ def composite_graph_1():
     G.add_edge(1, 4, weight=0)
     G.add_edge(2, 4, weight=0)
     return G
+
+
+def generate_barabasi(n):
+    import random
+    G = nx.barabasi_albert_graph(n, 2)
+    percent_chance_of_inhibited_edge = 40
+    for u, v, d in G.edges(data=True):
+        d['weight'] = random.choice([0]*(100-percent_chance_of_inhibited_edge) + [1]*percent_chance_of_inhibited_edge)
+    return G
+
+
+def generate_graph():
+    G = nx.DiGraph()
+    G.add_edge(1, 2, weight=0)
+    G.add_edge(3, 2, weight=1)
+    G.add_edge(2, 4, weight=1)
+    G.add_edge(5, 4, weight=0)
+    return G
+
+def generate_graph_test_combine():
+    G = nx.DiGraph()
+    G.add_edge(1, 2, weight=0)
+    G.add_edge(3, 2, weight=1)
+    G.add_edge(2, 4, weight=1)
+    G.add_edge(5, 4, weight=0)
+    return G
+
+def generate_graph_test_combine1():
+    G = nx.DiGraph()
+    G.add_edge(3, 2, weight=1)

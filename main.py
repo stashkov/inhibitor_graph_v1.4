@@ -78,12 +78,6 @@ def generate_graph():
     return G
 
 
-def generate_barabasi(n):
-    G = nx.barabasi_albert_graph(n, 2)
-    for u, v, d in G.edges(data=True):
-        d['weight'] = random.choice([0]*90 + [1]*10)  # 2% chance of an inhibited edge
-    return G
-
 if __name__ == '__main__':
     G = generate_graph()
     # G = generate_barabasi(20)
