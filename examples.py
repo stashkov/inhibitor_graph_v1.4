@@ -127,9 +127,18 @@ def generate_graph():
     G = nx.DiGraph()
     G.add_edge(1, 2, weight=0)
     G.add_edge(3, 2, weight=1)
+    G.add_edge(3, 6, weight=0)
     G.add_edge(2, 4, weight=1)
     G.add_edge(5, 4, weight=0)
+
+    G.node[1]['info'] = 'A'
+    G.node[3]['info'] = 'B'
+    G.node[2]['info'] = 'C'
+    G.node[4]['info'] = 'E'
+    G.node[5]['info'] = 'D'
+    G.node[6]['info'] = 'F'
     return G
+
 
 def generate_graph_test_combine():
     G = nx.DiGraph()
