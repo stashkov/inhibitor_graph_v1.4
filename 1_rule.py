@@ -142,7 +142,8 @@ def print_my_insane_dict(d):
 
 if __name__ == '__main__':
     # G = generate_barabasi(100)
-    G = examples.generate_graph()
+    # G = examples.generate_graph()
+    G = examples.example30()
     # G = generate_graph_test_loops()
 
     G1, G1_selfloop = generate_self_loop_graph(G)
@@ -173,7 +174,9 @@ if __name__ == '__main__':
 
     z = max(G1.nodes())
     contract_nodes_candidates = contract_nodes_candidates_in_original_graph(G)
-    contract_nodes_candidates = {2: [1, 3]}
+    # contract_nodes_candidates = {2: [1, 3]}
+
+    print contract_nodes_candidates
 
 
     for child, parents in contract_nodes_candidates.iteritems():
@@ -182,7 +185,9 @@ if __name__ == '__main__':
         edges_to_add = list()  # list of tuples
         new_node_label = list()
         new_node_info = str()
+        print 'first', z
         z += 1  # new node
+        print 'second', z
         print child, parents
         edges_to_add.append((z, child))
         for p in parents:
@@ -202,29 +207,26 @@ if __name__ == '__main__':
                                                          node_to_add=node_to_add,
                                                          edges_to_add=edges_to_add)
 
+        print 'third', z
+        print_my_insane_dict(dict_test)
 
-    print_my_insane_dict(dict_test)
 
-    G_3_1 = copy.deepcopy(G2)
     for k, v in dict_test.iteritems():
+        G_3_1 = copy.deepcopy(G2)
         edges_to_remove_from_G2, node_to_add, edges_to_add = v
         for u, v in edges_to_remove_from_G2:
             G_3_1.remove_edge(u, v)
-
+        print 'fourth', z
         z, label, info = node_to_add
+        print 'fifth', z
+        print z, label, info
         G_3_1.add_node(z, label=label, info=info)
 
         for u, v in edges_to_add:
             G_3_1.add_edge(u, v)
 
-    G3 = nx.compose(G_3_1, G1)  # apparently order matters
+        G3 = nx.compose(G_3_1, G1)  # apparently order matters
 
-
-    print '\n'
-    print G2.edges()
-
-    print G1.edges()
-    print G1.nodes(data=True)
 
     # G = examples.example30()
     # G = examples.generate_graph()
@@ -262,26 +264,20 @@ if __name__ == '__main__':
     #     G2.add_edge(z, k, weight=0)
 
 
-
-
-
-
-
-
-
-
-
-
-    for node in G3.nodes():
-        # print 'test', G3.node[node]['contraction']
-        for attrib in G3.node[node]:
-            # print G3.node[node], 'before', node
-            if type(G3.node[node][attrib]) == list:
-                G3.node[node]['label'] = str(G3.node[node]['label'])
-                # print node, 'oO'
-                # print G3.node[node]
+        for node in G3.nodes():
+            # print 'test', G3.node[node]['contraction']
+            for attrib in G3.node[node]:
+                # print G3.node[node], 'before', node
+                if type(G3.node[node][attrib]) == list:
+                    G3.node[node]['label'] = str(G3.node[node]['label'])
+                    # print node, 'oO'
+                    # print G3.node[node]
     #
     #
+
+        print 'saving', z
+        nx.write_graphml(G3, "_example_30_" + str(z) + ".graphml")
+
     plt.figure(1)
     plt.subplot(221)
     my_draw_graph(G)
@@ -298,10 +294,6 @@ if __name__ == '__main__':
 
 
     plt.show()
-    #
-    print nx.write_graphml(G3, "test_G3.graphml")
-
-
 
 
     # G2 = nx.contracted_nodes(G2, v[0], v[1])
