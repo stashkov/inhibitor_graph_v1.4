@@ -119,10 +119,19 @@ def composite_graph_1():
 
 def generate_barabasi(n):
     import random
-    G = nx.barabasi_albert_graph(n, 2)
-    percent_chance_of_inhibited_edge = 40
+    G = nx.barabasi_albert_graph(n, 2, seed=13)
+    # set info ( information about a node )
+    for i in range(len(G.nodes())):
+        G.node[i]['info'] = '_%s_' % i
+
+    percent_chance_of_inhibited_edge = 25
     for u, v, d in G.edges(data=True):
         d['weight'] = random.choice([0]*(100-percent_chance_of_inhibited_edge) + [1]*percent_chance_of_inhibited_edge)
+
+    diff = list(set(G.edges()) - set(G.to_directed()))
+    G = G.to_directed()
+    for u, v in diff:
+        G.remove_edge(u, v)
     return G
 
 

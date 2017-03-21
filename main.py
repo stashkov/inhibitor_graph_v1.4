@@ -1,107 +1,363 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import string
 import math
-import random
-
-
-def color_negative_and_positive_nodes(graph):
-    red, white = [], []
-    if any('mark' in d.keys() for u, d in graph.nodes(data=True)):
-        for u, d in graph.nodes(data=True):
-            if d['mark'] is True:
-                white.append(u)
-            else:
-                red.append(u)
-    else:
-        white.extend(graph.nodes())
-    return red, white
-
-
-def assign_labels_to_nodes(graph):
-    # labels = dict(zip(range(1, len(graph.nodes()) + 1), string.ascii_uppercase))
-    labels = {i: str(i) for i in range(1, len(graph.nodes())+1)}  # TODO figure this out +1 for len ?
-    # labels = {i: str(i) for i in range(len(graph.nodes()))}
-    print labels, len(labels)
-    if 'mark' in graph.nodes(data=True)[0][1].keys():
-        for k, v in labels.iteritems():
-            labels[k] += ' \n' + str(graph.node[k]['mark'])
-    print labels, len(labels)
-    return labels
+import examples
+import copy
+import collections
+import itertools
+"""
+if u -> v is inhibited, we duplicate v to bar{v} and redirect u to bar{v}
+v and bar{v} will be connect via a directed loop
+"""
 
 
 def my_draw_graph(G):
     pos = nx.spring_layout(G, k=5/math.sqrt(G.order()))  # k - Optimal distance between nodes.
+    labels = dict()
+    white_nodes, red_nodes = [], []
+    for n, d in G.nodes(data=True):
+        labels[n] = str(d.get('info')) + ' ' + str(d.get('label', n)) + '\n' + str(d.get('flag', ''))
+        if 'flag' not in d.keys() or d['flag'] is True:
+            white_nodes.append(n)
+        else:
+            red_nodes.append(n)
 
-    labels = assign_labels_to_nodes(G)
-    red, white = color_negative_and_positive_nodes(G)
-    nx.draw_networkx_nodes(G, pos, node_size=2000, node_color='white', nodelist=white)
-    nx.draw_networkx_nodes(G, pos, node_size=2000, node_color='red', nodelist=red)
-    # nx.draw_networkx_edges(G, pos)
-    elarge = [(u, v) for (u, v, d) in G.edges(data=True) if d['weight'] == 0]
-    esmall = [(u, v) for (u, v, d) in G.edges(data=True) if d['weight'] == 1]
-
-    nx.draw_networkx_edges(G, pos, edgelist=elarge, width=3)
-    nx.draw_networkx_edges(G, pos,
-                           edgelist=esmall,
-                           width=3,
-                           alpha=0.5,
-                           edge_color='red',
-                           style='dashed')
+    nx.draw_networkx_edges(G, pos, width=3)
+    nx.draw_networkx_nodes(G, pos, node_size=3*3000, node_color='white', nodelist=white_nodes)
+    nx.draw_networkx_nodes(G, pos, node_size=3*3000, node_color='red', nodelist=red_nodes)
     nx.draw_networkx_labels(G, pos, labels, font_size=15)
 
 
-def add_edge(graph, u, v, attr_dict):
-    visited = set(graph.nodes())
-    if u in visited and v not in visited:
-        graph.add_node(v, mark=attr_dict[v])
-        graph.add_edge(u, v, weight=0)
-        if attr_dict[u] is False:
-            graph.add_node(u, mark=attr_dict[u])
-    elif v in visited and u not in visited:
-        graph.add_node(u, mark=attr_dict[u])
-        graph.add_edge(u, v, weight=0)
-        if attr_dict[v] is False:
-            graph.add_node(v, mark=attr_dict[v])
-    else:
-        graph.add_node(u, mark=attr_dict[u])
-        graph.add_node(v, mark=attr_dict[v])
-        graph.add_edge(u, v, weight=0)
+def remove_out_degree_zero_nodes(graph):
+    for v, d in graph.nodes(data=True):
+        if graph.in_degree(v) == graph.out_degree(v) == 1 and graph.predecessors(v) == graph.successors(v):
+            graph.remove_node(v)
 
 
-def generate_graph():
-    G = nx.DiGraph()
-    G.add_edge(1, 2, weight=0)
-    G.add_edge(3, 2, weight=1)
-    G.add_edge(2, 4, weight=0)
-    G.add_edge(4, 5, weight=0)
-    return G
+def contract_nodes_candidates(graph):
+    d = dict()
+    for u in graph.nodes():
+        # print graph.predecessors(u), len(graph.predecessors(u))
+        predecessors = graph.predecessors(u)
+        if len(predecessors) > 1:
+            d[u] = predecessors
+    return d
+
+
+def contract_nodes_candidates_in_modified_graph(graph):
+    nodes = dict()
+    for u, d in graph.nodes(data=True):
+        # print graph.predecessors(u), len(graph.predecessors(u))
+        print u, d, graph.node[u]['label']
+
+        predecessors = graph.predecessors(u)
+        node_negation = graph.node[u]['label']
+        if node_negation in predecessors:
+            predecessors.remove(node_negation)
+
+        if len(predecessors) > 1:
+            nodes[u] = predecessors
+    return nodes
+
+
+def contract_nodes_candidates_in_original_graph(graph):
+    """
+    :param graph: object of type networkx.classes.digraph.DiGraph
+    :return:
+    """
+    import networkx
+    assert isinstance(graph, networkx.classes.digraph.DiGraph)
+    # contract_nodes_candidates = {2: [1, 3]} # [(2, [1,3]),...]
+    nodes = list()
+    # Edges = collections.namedtuple('Edges', 'child parents')
+    for u, d in graph.nodes(data=True):
+        # print graph.predecessors(u), len(graph.predecessors(u))
+        predecessors = graph.predecessors(u)
+        if len(predecessors) > 1:
+            # nodes.append(Edges(child=u, parents=predecessors))
+            nodes.append((u, predecessors))
+            # nodes[u] = predecessors
+    return nodes
+
+
+def replace_inhibited_edges_with_negation_of_node(input_graph, output_graph):
+    added_negative_nodes = set()
+    next_node = max(input_graph.nodes())
+    for u, v, d in input_graph.edges(data=True):
+        if d['weight'] == 0:
+            output_graph.add_node(u, label=u, flag=True)
+            output_graph.add_node(v, label=v, flag=True)
+            output_graph.add_edge(u, v, weight=0)
+        if d['weight'] == 1:
+            output_graph.add_node(u, label=u, flag=True)
+            output_graph.add_node(v, label=v, flag=True)
+            if v not in added_negative_nodes:
+                added_negative_nodes.add(v)
+                next_node += 1
+                w = next_node
+                output_graph.add_node(w, label=v, flag=False)
+                output_graph.add_edge(u, w, weight=0)
+                output_graph.add_edge(v, w, weight=0)  # self loop
+                output_graph.add_edge(w, v, weight=0)  # self loop
+            else:
+                output_graph.add_edge(u, v, weight=0)
+    return output_graph
+
+
+def generate_self_loop_graph(G):
+    G1_selfloop = dict()
+    G1 = nx.DiGraph()
+    z = max(G.nodes())
+    for v in G.nodes():
+        # add labels True to all starting nodes
+        G1.add_node(v, label=[v, True], info=G.node[v]['info'] + '1')
+        # add mirror negated nodes
+        z += 1
+        G1.add_node(z, label=[v, False], info=G.node[v]['info'] + '0')
+        # add edges between them
+        G1.add_edge(v, z)
+        G1.add_edge(z, v)
+        # create dictionary of self loops
+        G1_selfloop[v] = z
+    return G1, G1_selfloop
+
+
+def generate_inhibited_edges_graph(G, G1_selfloop):
+    G2 = nx.DiGraph()
+    for u, v in G.edges():
+        if G[u][v]['weight'] == 0:
+            G2.add_node(u, label=[u, True], info=G.node[u]['info'] + '1')
+            G2.add_node(v, label=[v, True], info=G.node[v]['info'] + '1')
+            G2.add_edge(u, v)
+        else:  # G[u][v]['weight'] == 1
+            G2.add_node(u, label=[u, True], info=G.node[u]['info'])
+            G2.add_node(G1_selfloop[v], label=[v, False], info=G.node[v]['info'] + '0')
+            G2.add_edge(u, G1_selfloop[v])
+    return G2
+
+
+def print_my_insane_dict(d):
+    for k, v in d.iteritems():
+        print k
+        child, parents = k
+        print '---'
+        print v.edges_to_remove_from_G2
+
+        node_to_add, label, info = v.node_to_add
+        print v.node_to_add
+
+        print v.edges_to_add
+        print '---'
+
+
+def add_combinations(edges, length=2):
+    """
+        input: a list of tuples (int, list())
+        output: append combinations of list() to a list
+        example:
+            list: [(1, [2, 3]),
+                    (2, [3, 4, 5])]
+            result: [(1, [2, 3]),
+                       (2, [3, 4, 5]),
+                       (2, [3, 4]),
+                       (2, [3, 5]),
+                       (2, [4, 5])]
+        because we took r-length combination of a list [3,4,5]
+    """
+    assert type(edges) == list
+    assert all(isinstance(u, int) for u, v in edges)
+    assert all(isinstance(v, list) for u, v in edges)
+    for child, parents in edges:
+        if len(parents) > length:
+            for c in list(itertools.combinations(parents, length)):
+                edges.append((child, list(c)))
+    return edges
 
 
 if __name__ == '__main__':
-    G = generate_graph()
-    # G = generate_barabasi(20)
+    G = examples.generate_barabasi(10)
+    # G = examples.generate_graph()
+    # G = examples.example30()
+    # G = generate_graph_test_loops()
+
+    G1, G1_selfloop = generate_self_loop_graph(G)
+
+    G2 = generate_inhibited_edges_graph(G, G1_selfloop)
+
+    # {
+    #     (2, [1,3]) : ([
+    #                       [1,2], [3,8]
+    #                   ],
+    #                   [
+    #                       [z, label=[parent1, True, parent2, False], info='AB0']
+    #                   ],
+    #                   [
+    #                       [z, 2], [1, z], [9, z]
+    #                   ])
+    # }
+    #
+
+    Combi_graph = collections.namedtuple('Combi_graph', 'edges_to_remove_from_G2 node_to_add edges_to_add')
+
+    # dict_test = {(2, (1, 3)): Combi_graph(edges_to_remove_from_G2=[[1, 2], [3, 8]],
+    #                                       node_to_add=(13, [1, True, 3, False], 'AB0'),
+    #                                       edges_to_add=[[13, 2], [1, 13], [9, 13]])}
+    #
+    #
+    dict_test = {}
+
+    z = max(G1.nodes())
+
+    contract_nodes_candidates = contract_nodes_candidates_in_original_graph(G)
+    contract_nodes_candidates = add_combinations(contract_nodes_candidates)
+
+    for child, parents in contract_nodes_candidates:
+        edges_to_remove_from_G2 = list()  # gonna be list of tuples
+        node_to_add = tuple()  # 3-tuple
+        edges_to_add = list()  # list of tuples
+        new_node_label = list()
+        new_node_info = str()
+        z += 1  # new node
+        print child, parents
+        edges_to_add.append((z, child))
+        for p in parents:
+            if G[p][child]['weight'] == 0:
+                new_node_label.extend([p, True])
+                new_node_info += G.node[p]['info']
+                edges_to_remove_from_G2.append((p, child))
+                edges_to_add.append((p, z))
+            if G[p][child]['weight'] == 1:
+                new_node_label.extend([p, False])
+                new_node_info += G.node[p]['info'] + '0'
+                edges_to_remove_from_G2.append((p, G1_selfloop[child]))
+                edges_to_add.append((G1_selfloop[p], z))
+        node_to_add = (z, new_node_label, new_node_info)
+
+        dict_test[(child, tuple(parents))] = Combi_graph(edges_to_remove_from_G2=edges_to_remove_from_G2,
+                                                         node_to_add=node_to_add,
+                                                         edges_to_add=edges_to_add)
+
+        print 'third', z
+        print_my_insane_dict(dict_test)
 
 
-    G1 = nx.DiGraph()
-    G2 = nx.DiGraph()
-    for u, v, d in G.edges(data=True):
-        if d['weight'] == 0:
-            add_edge(G1, u, v, {u: True, v: True})
-            add_edge(G2, u, v, {u: True, v: True})
-        if d['weight'] == 1:
-            add_edge(G1, u, v, {u: True, v: False})
-            add_edge(G2, u, v, {u: False, v: True})
+    for k, v in dict_test.iteritems():
+        G_3_1 = copy.deepcopy(G2)
+        edges_to_remove_from_G2, node_to_add, edges_to_add = v
+        for u, v in edges_to_remove_from_G2:
+            G_3_1.remove_edge(u, v)
+        z, label, info = node_to_add
+        print z, label, info
+        G_3_1.add_node(z, label=label, info=info)
+
+        for u, v in edges_to_add:
+            G_3_1.add_edge(u, v)
+
+        G3 = nx.compose(G_3_1, G1)  # apparently order matters
+
+
+    # G = examples.example30()
+    # G = examples.generate_graph()
+
+    # G1 = nx.DiGraph()
+    # G1 = replace_inhibited_edges_with_negation_of_node(input_graph=G, output_graph=G1)
+
+    # remove_out_degree_zero_nodes(G1)
+
+    # contract_nodes_candidates = contract_nodes_candidates_in_original_graph(G)
+    # TODO remove this line, because it was used for tests
+    # contract_nodes_candidates = {2: [1, 3]}
+    # print contract_nodes_candidates
+
+    # G2 = copy.deepcopy(G1)
+
+    # edges_pool = dict()
+    # z = max(G2.nodes())
+
+    # for k, nodes_going_to_k in contract_nodes_candidates.iteritems():
+    #     # print 'oO', G[1][2]
+    #     # print G2.node[2]['label'], G2.node[2]['flag']
+    #     z += 1
+    #     label = str()
+    #     for n in nodes_going_to_k:
+    #         # TODO A and B can have predecessors, in this case we need to redirect all of them to a new node z
+    #         # G.predecessors(n)
+    #         # print G2.node[n]['label'], G2.node[n]['flag'], k,  G[n][k]
+    #         if G[n][k]['weight'] == 0:
+    #             label += str(n) + 'T'
+    #         else:
+    #             label += str(n) + 'F'
+    #         G2.remove_node(n)
+    #     G2.add_node(z, label=label)
+    #     G2.add_edge(z, k, weight=0)
+
+
+        for node in G3.nodes():
+            # print 'test', G3.node[node]['contraction']
+            for attrib in G3.node[node]:
+                # print G3.node[node], 'before', node
+                if type(G3.node[node][attrib]) == list:
+                    G3.node[node]['label'] = str(G3.node[node]['label'])
+                    # print node, 'oO'
+                    # print G3.node[node]
+
+        nx.write_graphml(G3, "_barabasi_stoichiometric_" + str(z) + ".graphml")
+
+        # create stoichiometric matrix
+        n_of_rows = max(G3.nodes())
+        n_of_columns = len(G3.edges())
+
+        matrix = [[0 for x in range(n_of_columns)] for y in range(n_of_rows)]
+        column = 0
+        for u, v in G3.edges():
+            matrix[u - 1][column] = -1
+            matrix[v - 1][column] = 1
+            column += 1
+
+        # we have nodes [1,2,4] this means node 3 doesn't exist, so we have to delete it
+        nodes_not_in_the_graph = list(set(range(1, len(G3.nodes())+1)) - set(G3.nodes()))
+        print 'before', len(matrix)
+        matrix = [row for i, row in enumerate(matrix) if i-1 not in nodes_not_in_the_graph]
+        print 'after', len(matrix)
+
+        print 'matrix dimensions: ', len(G3.nodes()), len(G3.edges())
+        print 'nodes: ', ' '.join(str(n) for n in G3.nodes())
+        print 'edges: ', ' '.join(str(u) + ' ' + str(v) for u, v in G3.edges())
+        print 'Saving GraphML', z
+
+        # save to file
+        f = open('_barabasi_stoichiometric_matrix_' + str(z) + '.txt', 'w')
+        f.write('matrix dimensions: %s %s' % (len(matrix), n_of_columns))
+        f.write('\n')
+        f.write('nodes: %s' % ' '.join(str(n) for n in G3.nodes()))
+        f.write('\n')
+        f.write('edges: %s' % ' '.join(str(u) + ' ' + str(v) for u, v in G3.edges()))
+        f.write('\n')
+
+        for i in matrix:
+            f.write('  '.join(str(e) for e in i))
+            f.write('\n')
+
+
 
 
 
     plt.figure(1)
-    plt.subplot(131)
+    plt.subplot(221)
     my_draw_graph(G)
-    plt.subplot(132)
+    plt.subplot(222)
     my_draw_graph(G1)
-    plt.subplot(133)
+    plt.subplot(223)
     my_draw_graph(G2)
+    plt.subplot(224)
+    my_draw_graph(nx.compose(G1,G2))
+
+    plt.figure(2)
+    plt.subplot(111)
+    my_draw_graph(G3)
 
 
     plt.show()
+
+
+    # G2 = nx.contracted_nodes(G2, v[0], v[1])
