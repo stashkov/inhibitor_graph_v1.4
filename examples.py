@@ -119,7 +119,7 @@ def composite_graph_1():
 
 def generate_barabasi(n):
     import random
-    G = nx.barabasi_albert_graph(n, 2, seed=13)
+    G = nx.barabasi_albert_graph(n, 2, seed=14)
     # set info ( information about a node )
     for i in range(len(G.nodes())):
         G.node[i]['info'] = '_%s_' % i

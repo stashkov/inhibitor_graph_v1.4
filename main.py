@@ -5,6 +5,8 @@ import examples
 import copy
 import collections
 import itertools
+import time
+
 """
 if u -> v is inhibited, we duplicate v to bar{v} and redirect u to bar{v}
 v and bar{v} will be connect via a directed loop
@@ -136,15 +138,11 @@ def generate_inhibited_edges_graph(G, G1_selfloop):
 
 def print_my_insane_dict(d):
     for k, v in d.iteritems():
-        print k
         child, parents = k
         print '---'
-        print v.edges_to_remove_from_G2
-
-        node_to_add, label, info = v.node_to_add
-        print v.node_to_add
-
-        print v.edges_to_add
+        print 'edges to remove from G2: ', v.edges_to_remove_from_G2
+        print 'node to add to G3', v.node_to_add
+        print 'edges to add to G3', v.edges_to_add
         print '---'
 
 
@@ -172,11 +170,78 @@ def add_combinations(edges, length=2):
     return edges
 
 
+def save_matrix(graph, sequential_number):
+    """
+    create and save to file stoichiometric matrix
+    """
+    # TODO write test case and refactor this
+    n_of_rows = max(graph.nodes())
+    n_of_columns = len(graph.edges())
+
+    matrix = [[0 for x in range(n_of_columns)] for y in range(n_of_rows)]
+    column = 0
+    for u, v in graph.edges():
+        matrix[u - 1][column] = -1
+        matrix[v - 1][column] = 1
+        column += 1
+
+    # we have nodes [1,2,4] this means node 3 doesn't exist, so we have to delete it
+    nodes_not_in_the_graph = list(set(range(1, len(G3.nodes()) + 1)) - set(G3.nodes()))
+    # TODO need to check that matrix in the output file has correct dimensions
+    matrix = [row for i, row in enumerate(matrix) if i - 1 not in nodes_not_in_the_graph]
+
+    # save to file
+    f = open('data/matrix/_barabasi_stoichiometric_matrix_' + str(sequential_number) + '.txt', 'w')
+    f.write('matrix dimensions: %s %s' % (len(matrix), n_of_columns))
+    f.write('\n')
+    f.write('nodes: %s' % ' '.join(str(n) for n in graph.nodes()))
+    f.write('\n')
+    f.write('edges: %s' % ' '.join(str(u) + ' ' + str(v) for u, v in graph.edges()))
+    f.write('\n')
+
+    for i in matrix:
+        f.write('  '.join(str(e) for e in i))
+        f.write('\n')
+    f.close()
+    return None
+
+
+def save_graphml(graph, sequential_number):
+    """
+    :param graph:
+    :param sequential_number:
+    :return:
+     graphML format doesn't like anything except strings
+     so we need to convert additional information to string
+    """
+    for node in graph.nodes():
+        # print 'test', graph.node[node]['contraction']
+        for attrib in graph.node[node]:
+            # print graph.node[node], 'before', node
+            if type(graph.node[node][attrib]) == list:
+                graph.node[node]['label'] = str(graph.node[node]['label'])
+                # print node, 'oO'
+                # print graph.node[node]
+
+    nx.write_graphml(graph, "data/graphML/_barabasi_stoichiometric_" + str(sequential_number) + ".graphml")
+    return None
+
+
+def plot_graph(*argv):
+    plt.figure(1)
+    for i, arg in enumerate(argv):
+        plt.subplot(2, 2, i + 1)
+        my_draw_graph(arg)
+    plt.show()
+    return None
+
+
 if __name__ == '__main__':
-    G = examples.generate_barabasi(10)
+    G = examples.generate_barabasi(7)
     # G = examples.generate_graph()
     # G = examples.example30()
     # G = generate_graph_test_loops()
+    start = time.time()
 
     G1, G1_selfloop = generate_self_loop_graph(G)
 
@@ -195,7 +260,7 @@ if __name__ == '__main__':
     # }
     #
 
-    Combi_graph = collections.namedtuple('Combi_graph', 'edges_to_remove_from_G2 node_to_add edges_to_add')
+
 
     # dict_test = {(2, (1, 3)): Combi_graph(edges_to_remove_from_G2=[[1, 2], [3, 8]],
     #                                       node_to_add=(13, [1, True, 3, False], 'AB0'),
@@ -209,6 +274,7 @@ if __name__ == '__main__':
     contract_nodes_candidates = nodes_more_1_parent(G)
     contract_nodes_candidates = add_combinations(contract_nodes_candidates)
 
+    Combi_graph = collections.namedtuple('Combi_graph', 'edges_to_remove_from_G2 node_to_add edges_to_add')
     for child, parents in contract_nodes_candidates:
         edges_to_remove_from_G2 = list()  # gonna be list of tuples
         node_to_add = tuple()  # 3-tuple
@@ -216,7 +282,7 @@ if __name__ == '__main__':
         new_node_label = list()
         new_node_info = str()
         z += 1  # new node
-        print child, parents
+        # print child, parents
         edges_to_add.append((z, child))
         for p in parents:
             if G[p][child]['weight'] == 0:
@@ -235,8 +301,6 @@ if __name__ == '__main__':
                                                          node_to_add=node_to_add,
                                                          edges_to_add=edges_to_add)
 
-        print_my_insane_dict(dict_test)
-
     # merge G1 and G3
     for k, v in dict_test.iteritems():
         G3_1 = copy.deepcopy(G2)
@@ -244,7 +308,7 @@ if __name__ == '__main__':
         for u, v in edges_to_remove_from_G2:
             G3_1.remove_edge(u, v)
         z, label, info = node_to_add
-        print z, label, info
+        # print z, label, info
         G3_1.add_node(z, label=label, info=info)
 
         for u, v in edges_to_add:
@@ -252,109 +316,13 @@ if __name__ == '__main__':
 
         G3 = nx.compose(G3_1, G1)  # apparently order matters
 
+        save_graphml(G3, z)
+        save_matrix(G3, z)
 
-    # G = examples.example30()
-    # G = examples.generate_graph()
+    print "Process time: %s " % (time.time() - start)
 
-    # G1 = nx.DiGraph()
-    # G1 = replace_inhibited_edges_with_negation_of_node(input_graph=G, output_graph=G1)
-
-    # remove_out_degree_zero_nodes(G1)
-
-    # contract_nodes_candidates = nodes_more_1_parent(G)
-    # TODO remove this line, because it was used for tests
-    # contract_nodes_candidates = {2: [1, 3]}
-    # print contract_nodes_candidates
-
-    # G2 = copy.deepcopy(G1)
-
-    # edges_pool = dict()
-    # z = max(G2.nodes())
-
-    # for k, nodes_going_to_k in contract_nodes_candidates.iteritems():
-    #     # print 'oO', G[1][2]
-    #     # print G2.node[2]['label'], G2.node[2]['flag']
-    #     z += 1
-    #     label = str()
-    #     for n in nodes_going_to_k:
-    #         # TODO A and B can have predecessors, in this case we need to redirect all of them to a new node z
-    #         # G.predecessors(n)
-    #         # print G2.node[n]['label'], G2.node[n]['flag'], k,  G[n][k]
-    #         if G[n][k]['weight'] == 0:
-    #             label += str(n) + 'T'
-    #         else:
-    #             label += str(n) + 'F'
-    #         G2.remove_node(n)
-    #     G2.add_node(z, label=label)
-    #     G2.add_edge(z, k, weight=0)
-
-
-        for node in G3.nodes():
-            # print 'test', G3.node[node]['contraction']
-            for attrib in G3.node[node]:
-                # print G3.node[node], 'before', node
-                if type(G3.node[node][attrib]) == list:
-                    G3.node[node]['label'] = str(G3.node[node]['label'])
-                    # print node, 'oO'
-                    # print G3.node[node]
-
-        nx.write_graphml(G3, "data/graphML/_barabasi_stoichiometric_" + str(z) + ".graphml")
-
-        # create stoichiometric matrix
-        n_of_rows = max(G3.nodes())
-        n_of_columns = len(G3.edges())
-
-        matrix = [[0 for x in range(n_of_columns)] for y in range(n_of_rows)]
-        column = 0
-        for u, v in G3.edges():
-            matrix[u - 1][column] = -1
-            matrix[v - 1][column] = 1
-            column += 1
-
-        # we have nodes [1,2,4] this means node 3 doesn't exist, so we have to delete it
-        nodes_not_in_the_graph = list(set(range(1, len(G3.nodes())+1)) - set(G3.nodes()))
-        print 'before', len(matrix)
-        matrix = [row for i, row in enumerate(matrix) if i-1 not in nodes_not_in_the_graph]
-        print 'after', len(matrix)
-
-        print 'matrix dimensions: ', len(G3.nodes()), len(G3.edges())
-        print 'nodes: ', ' '.join(str(n) for n in G3.nodes())
-        print 'edges: ', ' '.join(str(u) + ' ' + str(v) for u, v in G3.edges())
-        print 'Saving GraphML', z
-
-        # save to file
-        f = open('data/matrix/_barabasi_stoichiometric_matrix_' + str(z) + '.txt', 'w')
-        f.write('matrix dimensions: %s %s' % (len(matrix), n_of_columns))
-        f.write('\n')
-        f.write('nodes: %s' % ' '.join(str(n) for n in G3.nodes()))
-        f.write('\n')
-        f.write('edges: %s' % ' '.join(str(u) + ' ' + str(v) for u, v in G3.edges()))
-        f.write('\n')
-
-        for i in matrix:
-            f.write('  '.join(str(e) for e in i))
-            f.write('\n')
+    plot_graph(G1, G2, G3_1, G3)
 
 
 
 
-
-    plt.figure(1)
-    plt.subplot(221)
-    my_draw_graph(G)
-    plt.subplot(222)
-    my_draw_graph(G1)
-    plt.subplot(223)
-    my_draw_graph(G2)
-    plt.subplot(224)
-    my_draw_graph(nx.compose(G1,G2))
-
-    plt.figure(2)
-    plt.subplot(111)
-    my_draw_graph(G3)
-
-
-    plt.show()
-
-
-    # G2 = nx.contracted_nodes(G2, v[0], v[1])
