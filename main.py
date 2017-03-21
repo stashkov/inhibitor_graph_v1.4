@@ -60,23 +60,21 @@ def contract_nodes_candidates_in_modified_graph(graph):
     return nodes
 
 
-def contract_nodes_candidates_in_original_graph(graph):
+def nodes_more_1_parent(graph):
     """
     :param graph: object of type networkx.classes.digraph.DiGraph
-    :return:
+    :return: a list of tuples [(2, [1,3]),...]
+
+    if node has > 1 parent we add it to a list
+    for possible contraction later
     """
     import networkx
     assert isinstance(graph, networkx.classes.digraph.DiGraph)
-    # contract_nodes_candidates = {2: [1, 3]} # [(2, [1,3]),...]
     nodes = list()
-    # Edges = collections.namedtuple('Edges', 'child parents')
     for u, d in graph.nodes(data=True):
-        # print graph.predecessors(u), len(graph.predecessors(u))
         predecessors = graph.predecessors(u)
         if len(predecessors) > 1:
-            # nodes.append(Edges(child=u, parents=predecessors))
             nodes.append((u, predecessors))
-            # nodes[u] = predecessors
     return nodes
 
 
@@ -208,7 +206,7 @@ if __name__ == '__main__':
 
     z = max(G1.nodes())
 
-    contract_nodes_candidates = contract_nodes_candidates_in_original_graph(G)
+    contract_nodes_candidates = nodes_more_1_parent(G)
     contract_nodes_candidates = add_combinations(contract_nodes_candidates)
 
     for child, parents in contract_nodes_candidates:
@@ -237,23 +235,22 @@ if __name__ == '__main__':
                                                          node_to_add=node_to_add,
                                                          edges_to_add=edges_to_add)
 
-        print 'third', z
         print_my_insane_dict(dict_test)
 
-
+    # merge G1 and G3
     for k, v in dict_test.iteritems():
-        G_3_1 = copy.deepcopy(G2)
+        G3_1 = copy.deepcopy(G2)
         edges_to_remove_from_G2, node_to_add, edges_to_add = v
         for u, v in edges_to_remove_from_G2:
-            G_3_1.remove_edge(u, v)
+            G3_1.remove_edge(u, v)
         z, label, info = node_to_add
         print z, label, info
-        G_3_1.add_node(z, label=label, info=info)
+        G3_1.add_node(z, label=label, info=info)
 
         for u, v in edges_to_add:
-            G_3_1.add_edge(u, v)
+            G3_1.add_edge(u, v)
 
-        G3 = nx.compose(G_3_1, G1)  # apparently order matters
+        G3 = nx.compose(G3_1, G1)  # apparently order matters
 
 
     # G = examples.example30()
@@ -264,7 +261,7 @@ if __name__ == '__main__':
 
     # remove_out_degree_zero_nodes(G1)
 
-    # contract_nodes_candidates = contract_nodes_candidates_in_original_graph(G)
+    # contract_nodes_candidates = nodes_more_1_parent(G)
     # TODO remove this line, because it was used for tests
     # contract_nodes_candidates = {2: [1, 3]}
     # print contract_nodes_candidates
@@ -301,7 +298,7 @@ if __name__ == '__main__':
                     # print node, 'oO'
                     # print G3.node[node]
 
-        nx.write_graphml(G3, "_barabasi_stoichiometric_" + str(z) + ".graphml")
+        nx.write_graphml(G3, "data/graphML/_barabasi_stoichiometric_" + str(z) + ".graphml")
 
         # create stoichiometric matrix
         n_of_rows = max(G3.nodes())
@@ -326,7 +323,7 @@ if __name__ == '__main__':
         print 'Saving GraphML', z
 
         # save to file
-        f = open('_barabasi_stoichiometric_matrix_' + str(z) + '.txt', 'w')
+        f = open('data/matrix/_barabasi_stoichiometric_matrix_' + str(z) + '.txt', 'w')
         f.write('matrix dimensions: %s %s' % (len(matrix), n_of_columns))
         f.write('\n')
         f.write('nodes: %s' % ' '.join(str(n) for n in G3.nodes()))
