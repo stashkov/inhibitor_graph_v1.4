@@ -70,8 +70,7 @@ def nodes_more_1_parent(graph):
     if node has > 1 parent we add it to a list
     for possible contraction later
     """
-    import networkx
-    assert isinstance(graph, networkx.classes.digraph.DiGraph)
+    assert isinstance(graph, nx.classes.digraph.DiGraph)
     nodes = list()
     for u, d in graph.nodes(data=True):
         predecessors = graph.predecessors(u)
@@ -170,28 +169,40 @@ def add_combinations(edges, length=2):
     return edges
 
 
-def save_matrix(graph, sequential_number):
-    """
-    create and save to file stoichiometric matrix
-    """
-    # TODO write test case and refactor this
+def missing_sequential_nodes(graph):
+    """given a graph with nodes [1,2,3,6,7] return [4,5]"""
+    assert isinstance(graph, nx.classes.digraph.DiGraph)
+    return list(set(range(1, max(graph.nodes()) + 1)) - set(graph.nodes()))
+
+
+def delete_rows_from_matrix(list_of_rows, matrix):
+    """we have nodes [1,2,7,11] this means nodes 3,4,5,6,8,9,10 do not exist, so we have to delete them"""
+    assert type(matrix) == list
+    assert all(isinstance(row, list) for row in matrix)
+    # TODO need to check that matrix in the output file has correct dimensions
+    matrix = [row for i, row in enumerate(matrix) if i + 1 not in list_of_rows]
+    return matrix
+
+
+def save_matrix(graph, sequential_number, file_prefix='empty_prefix'):
+    """    create and save to file stoichiometric matrix    """
+    # TODO write test case
     n_of_rows = max(graph.nodes())
     n_of_columns = len(graph.edges())
-
     matrix = [[0 for x in range(n_of_columns)] for y in range(n_of_rows)]
+
     column = 0
     for u, v in graph.edges():
         matrix[u - 1][column] = -1
         matrix[v - 1][column] = 1
         column += 1
 
-    # we have nodes [1,2,4] this means node 3 doesn't exist, so we have to delete it
-    nodes_not_in_the_graph = list(set(range(1, len(G3.nodes()) + 1)) - set(G3.nodes()))
-    # TODO need to check that matrix in the output file has correct dimensions
-    matrix = [row for i, row in enumerate(matrix) if i - 1 not in nodes_not_in_the_graph]
+    delete_rows_from_matrix(missing_sequential_nodes(G3), matrix)
+
+
 
     # save to file
-    f = open('data/matrix/_barabasi_stoichiometric_matrix_' + str(sequential_number) + '.txt', 'w')
+    f = open('data/matrix/%s_matrix_%s.txt' % (file_prefix, sequential_number), 'w')
     f.write('matrix dimensions: %s %s' % (len(matrix), n_of_columns))
     f.write('\n')
     f.write('nodes: %s' % ' '.join(str(n) for n in graph.nodes()))
@@ -237,9 +248,9 @@ def plot_graph(*argv):
 
 
 if __name__ == '__main__':
-    G = examples.generate_barabasi(7)
+    G = examples.generate_barabasi(7); graph_name = 'barabasi'
     # G = examples.generate_graph()
-    # G = examples.example30()
+    # G = examples.example30(); graph_name = 'example30'
     # G = generate_graph_test_loops()
     start = time.time()
 
@@ -317,7 +328,7 @@ if __name__ == '__main__':
         G3 = nx.compose(G3_1, G1)  # apparently order matters
 
         save_graphml(G3, z)
-        save_matrix(G3, z)
+        save_matrix(G3, z, file_prefix=graph_name)
 
     print "Process time: %s " % (time.time() - start)
 
