@@ -179,7 +179,6 @@ def delete_rows_from_matrix(list_of_rows, matrix):
     """we have nodes [1,2,7,11] this means nodes 3,4,5,6,8,9,10 do not exist, so we have to delete them"""
     assert type(matrix) == list
     assert all(isinstance(row, list) for row in matrix)
-    # TODO need to check that matrix in the output file has correct dimensions
     matrix = [row for i, row in enumerate(matrix) if i + 1 not in list_of_rows]
     return matrix
 
@@ -330,7 +329,7 @@ if __name__ == '__main__':
         save_graphml(G3, z)
         save_matrix(G3, z, file_prefix=graph_name)
 
-    print "Process time: %s " % (time.time() - start)
+    # print "Process time: %s " % (time.time() - start)
 
     plot_graph(G1, G2, G3_1, G3)
 
