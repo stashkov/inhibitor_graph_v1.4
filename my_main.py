@@ -12,7 +12,9 @@ G = examples.generate_graph()
 # save_matrix(G3, z, file_prefix=graph_name)
 
 a = ig.RemoveInhibitionFromMethabolicPathway(G)
-for graph in a.result:
-    print graph.nodes(data=True)
+for i, graph in enumerate(a.result):
+    a.save_matrix(graph=graph, sequential_number=i, file_prefix='test')
+    a.save_graphml(graph=graph, sequential_number=i, file_prefix='test')
 
-a.print_dict_of_actions(a.dict_of_actions)
+
+# a.print_dict_of_actions(a.dict_of_actions)
