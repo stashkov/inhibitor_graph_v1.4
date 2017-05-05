@@ -104,8 +104,8 @@ class Sampler(object):
         return Tj, Tk
 
     def get_cj_ck(self, T, j, k):
-        # TODO only last line can be kept
-        # because I only have a case where revesibility vector is all False
+        # because I only have a case where reversibility vector is all False
+        # I can ignore 3 other cases
         # if self.rev_vector[j] and self.rev_vector[k]:
         #     cj, ck = -T[k, 0], T[j, 0]
         # elif self.rev_vector[j] and not self.rev_vector[k]:
@@ -113,7 +113,7 @@ class Sampler(object):
         # elif not self.rev_vector[j] and self.rev_vector[k]:
         #     cj, ck = np.sign(T[k, 0]) * T[k, 0], -np.sign(T[k, 0]) * T[j, 0]
         # else:
-        #
+        #     cj, ck = abs(T[k, 0]), abs(T[j, 0])
         cj, ck = abs(T[k, 0]), abs(T[j, 0])
         return cj, ck
 
