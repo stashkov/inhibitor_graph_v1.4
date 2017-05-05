@@ -69,6 +69,33 @@ class TestRemoveInhibitionFromMethabolicPathway(TestCase):
                               (5, {'info': 'D1', 'label': [5, True]}), (6, {'info': 'F1', 'label': [6, True]}),
                               (8, {'info': 'C0', 'label': [2, False]}), (10, {'info': 'E0', 'label': [4, False]})]
         self.gold_G2_edges = [(1, 2, {}), (2, 10, {}), (3, 8, {}), (3, 6, {}), (5, 4, {})]
+        self.gold_stoichimetric_matrix1 = [[-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+                                           [1, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                                           [0, 0, 0, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                                           [0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+                                           [0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                                           [0, 0, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 1, 0],
+                                           [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0],
+                                           [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0],
+                                           [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0],
+                                           [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0],
+                                           [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+                                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0],
+                                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                           [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, -1]]
+        self.gold_stoichimetric_matrix2 = [[-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+                                           [0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+                                           [0, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                                           [0, 0, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                                           [0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                                           [0, 0, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 1, 0],
+                                           [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0],
+                                           [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0],
+                                           [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, 0, 0],
+                                           [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0],
+                                           [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
+                                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0],
+                                           [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, -1]]
 
         self.lead_graph, self.lead_selfloop = self.lead_instance.generate_self_loop_graph()
         self.lead_dict_of_actions = self.lead_instance.dictionary_of_actions()
@@ -123,3 +150,11 @@ class TestRemoveInhibitionFromMethabolicPathway(TestCase):
                (2, [3, 5]),
                (2, [4, 5])]
         self.assertEqual(self.lead_instance.add_combinations(edges), res)
+
+    def test_save_matrix1(self):
+        lead = self.lead_instance.generate_stoichiometric_matrix()[0]
+        self.assertEqual(lead, self.gold_stoichimetric_matrix1)
+
+    def test_save_matrix2(self):
+        lead = self.lead_instance.generate_stoichiometric_matrix()[1]
+        self.assertEqual(lead, self.gold_stoichimetric_matrix2)

@@ -20,6 +20,7 @@ class RemoveInhibitionFromMethabolicPathway(object):
         self.G2 = self.generate_inhibited_edges_graph()
         self.dict_of_actions = self.dictionary_of_actions()
         self.result = self.merge_G1_and_G3()
+        self.stoichiometric_matrices = self.generate_stoichiometric_matrix()
 
     @staticmethod
     def nodes_more_1_parent(graph):
@@ -177,11 +178,7 @@ class RemoveInhibitionFromMethabolicPathway(object):
             result.append(G3)
         return result
 
-    @staticmethod
-    def save_matrix(graph, sequential_number, file_prefix='empty_prefix'):
-        # TODO write test case
-        """given a networkx DiGraph generate stoichiometric matrix and save it"""
-
+    def generate_stoichiometric_matrix(self):
         def missing_sequential_nodes(graph):
             """given a graph with nodes [1,2,3,6,7] return [4,5]"""
             assert isinstance(graph, nx.classes.digraph.DiGraph)
@@ -194,32 +191,36 @@ class RemoveInhibitionFromMethabolicPathway(object):
             matrix = [row for i, row in enumerate(matrix) if i + 1 not in list_of_rows]
             return matrix
 
-        n_of_rows = max(graph.nodes())
-        n_of_columns = len(graph.edges())
-        matrix = [[0 for _ in range(n_of_columns)] for _ in range(n_of_rows)]
+        def mark_involved_in_reaction_enzymes(graph, matrix):
+            column = 0
+            for u, v in graph.edges():
+                matrix[u - 1][column] = -1
+                matrix[v - 1][column] = 1
+                column += 1
 
-        column = 0
-        for u, v in graph.edges():
-            matrix[u - 1][column] = -1
-            matrix[v - 1][column] = 1
-            column += 1
+        list_of_matrices = list()
+        for graph in self.result:
+            n_of_rows = max(graph.nodes())
+            n_of_columns = len(graph.edges())
+            matrix = [[0 for _ in range(n_of_columns)] for _ in range(n_of_rows)]
 
-        # here was G3 and I switched to graph (may be error)
-        delete_rows_from_matrix(missing_sequential_nodes(graph), matrix)
+            mark_involved_in_reaction_enzymes(graph, matrix)
+            delete_rows_from_matrix(missing_sequential_nodes(graph), matrix)
+            list_of_matrices.append(matrix)
+        return list_of_matrices
 
-        # save to file
-        f = open('data/matrix/%s_matrix_%s.txt' % (file_prefix, sequential_number), 'w')
-        f.write('matrix dimensions: %s %s' % (len(matrix), n_of_columns))
-        f.write('\n')
-        f.write('nodes: %s' % ' '.join(str(n) for n in graph.nodes()))
-        f.write('\n')
-        f.write('edges: %s' % ' '.join(str(u) + ' ' + str(v) for u, v in graph.edges()))
-        f.write('\n')
+    def save_matrix(self, file_prefix='empty_prefix'):
+        """save all stoichimetric matrices"""
+        assert len(self.result) == len(self.stoichiometric_matrices)
+        for i, m in enumerate(self.stoichiometric_matrices):
+            f = open('data/matrix/%s_matrix_%s.txt' % (file_prefix, i), 'w')
+            f.write('matrix dimensions: %s %s\n' % (len(m), len(self.result[i].edges())))
+            f.write('nodes: %s\n' % ' '.join(str(n) for n in self.result[i].nodes()))
+            f.write('edges: %s\n' % ' '.join(str(u) + ' ' + str(v) for u, v in self.result[i].edges()))
 
-        for i in matrix:
-            f.write('  '.join(str(e) for e in i))
-            f.write('\n')
-        f.close()
+            for row in m:
+                f.write('%s\n' % '  '.join(str(e) for e in row))
+            f.close()
         return None
 
     @staticmethod
