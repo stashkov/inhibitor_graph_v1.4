@@ -1,5 +1,6 @@
 import examples
 import pathway_graph as ig
+import copy
 
 # G = examples.generate_barabasi(7); graph_name = 'barabasi'
 G = examples.generate_graph()
@@ -9,15 +10,18 @@ G = examples.generate_graph()
 
 # [save_graphml(G3, z) for G3 in result ]
 # save_graphml(G3, z)
-# save_matrix(G3, z, file_prefix=graph_name)
+# save_stoichimetric_matrices(G3, z, file_prefix=graph_name)
 
 a = ig.RemoveInhibitionFromMethabolicPathway(G)
-for i, graph in enumerate(a.result):
-    a.save_matrix(graph=graph, sequential_number=i, file_prefix='test')
-    a.save_graphml(graph=graph, sequential_number=i, file_prefix='test')
+a.save_stoichimetric_matrices(file_prefix='test')
 
-    # TODO stoichimetric matrix should be instance variable
-    # TODO remove node from a graph and based on that create a new instance of the class
+for node in G.nodes():
+    print node
+    temp_graph = copy.deepcopy(G)
+    temp_graph.remove_node(node)
+    a = ig.RemoveInhibitionFromMethabolicPathway(temp_graph)
+    a.save_stoichimetric_matrices(file_prefix='node' + str(node))
 
+# TODO for each of generated stoichimetric matrices
 
 # a.print_dict_of_actions(a.dict_of_actions)
