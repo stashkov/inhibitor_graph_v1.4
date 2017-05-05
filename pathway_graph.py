@@ -37,7 +37,7 @@ class RemoveInhibitionFromMethabolicPathway(object):
             if len(predecessors) > 1:
                 nodes.append((u, predecessors))
         return nodes
-    
+
     def generate_self_loop_graph(self):
         G1_selfloop = dict()
         G1 = nx.DiGraph()
@@ -67,7 +67,7 @@ class RemoveInhibitionFromMethabolicPathway(object):
                 G2.add_node(self.G1_selfloop[v], label=[v, False], info=self.G.node[v]['info'] + '0')
                 G2.add_edge(u, self.G1_selfloop[v])
         return G2
-    
+
     @staticmethod
     def print_dict_of_actions(d):
         for k, v in d.iteritems():
@@ -126,12 +126,12 @@ class RemoveInhibitionFromMethabolicPathway(object):
 
         """
         dict_test = {}
-    
+
         z = max(self.G1.nodes())
-    
+
         contract_nodes_candidates = self.nodes_more_1_parent(self.G)
         contract_nodes_candidates = self.add_combinations(contract_nodes_candidates)
-    
+
         Combi_graph = collections.namedtuple('Combi_graph', 'edges_to_remove_from_G2 node_to_add edges_to_add')
         for child, parents in contract_nodes_candidates:
             edges_to_remove_from_G2 = list()  # gonna be list of tuples
@@ -154,7 +154,7 @@ class RemoveInhibitionFromMethabolicPathway(object):
                     edges_to_remove_from_G2.append((p, self.G1_selfloop[child]))
                     edges_to_add.append((self.G1_selfloop[p], z))
             node_to_add = (z, new_node_label, new_node_info)
-    
+
             dict_test[(child, tuple(parents))] = Combi_graph(edges_to_remove_from_G2=edges_to_remove_from_G2,
                                                              node_to_add=node_to_add,
                                                              edges_to_add=edges_to_add)
@@ -172,8 +172,69 @@ class RemoveInhibitionFromMethabolicPathway(object):
             G3_1.add_node(z, label=label, info=info)
             for u, v in edges_to_add:
                 G3_1.add_edge(u, v)
-    
+
             G3 = nx.compose(G3_1, self.G1)  # apparently order matters
             result.append(G3)
-            # plot_graph(G1, G2, G3_1, G3)
         return result
+
+    @staticmethod
+    def save_matrix(graph, sequential_number, file_prefix='empty_prefix'):
+        # TODO write test case
+        """given a networkx DiGraph generate stoichiometric matrix and save it"""
+
+        def missing_sequential_nodes(graph):
+            """given a graph with nodes [1,2,3,6,7] return [4,5]"""
+            assert isinstance(graph, nx.classes.digraph.DiGraph)
+            return list(set(range(1, max(graph.nodes()) + 1)) - set(graph.nodes()))
+
+        def delete_rows_from_matrix(list_of_rows, matrix):
+            """we have nodes [1,2,7,11] this means nodes 3,4,5,6,8,9,10 do not exist, so we have to delete them"""
+            assert type(matrix) == list
+            assert all(isinstance(row, list) for row in matrix)
+            matrix = [row for i, row in enumerate(matrix) if i + 1 not in list_of_rows]
+            return matrix
+
+        n_of_rows = max(graph.nodes())
+        n_of_columns = len(graph.edges())
+        matrix = [[0 for _ in range(n_of_columns)] for _ in range(n_of_rows)]
+
+        column = 0
+        for u, v in graph.edges():
+            matrix[u - 1][column] = -1
+            matrix[v - 1][column] = 1
+            column += 1
+
+        # here was G3 and I switched to graph (may be error)
+        delete_rows_from_matrix(missing_sequential_nodes(graph), matrix)
+
+        # save to file
+        f = open('data/matrix/%s_matrix_%s.txt' % (file_prefix, sequential_number), 'w')
+        f.write('matrix dimensions: %s %s' % (len(matrix), n_of_columns))
+        f.write('\n')
+        f.write('nodes: %s' % ' '.join(str(n) for n in graph.nodes()))
+        f.write('\n')
+        f.write('edges: %s' % ' '.join(str(u) + ' ' + str(v) for u, v in graph.edges()))
+        f.write('\n')
+
+        for i in matrix:
+            f.write('  '.join(str(e) for e in i))
+            f.write('\n')
+        f.close()
+        return None
+
+    @staticmethod
+    def save_graphml(graph, sequential_number, file_prefix='empty_prefix'):
+        """save networkx DiGraph as GraphML file"""
+        # graphML format doesn't like anything except strings
+        # so we need to convert additional information to string
+        for node in graph.nodes():
+            # print 'test', graph.node[node]['contraction']
+            for attrib in graph.node[node]:
+                # print graph.node[node], 'before', node
+                if type(graph.node[node][attrib]) == list:
+                    graph.node[node]['label'] = str(graph.node[node]['label'])
+                    # print node, 'oO'
+                    # print graph.node[node]
+
+        nx.write_graphml(graph, "data/graphML/" + file_prefix + "_" + str(sequential_number) + ".graphml")
+        return None

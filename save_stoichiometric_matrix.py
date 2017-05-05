@@ -1,69 +1,6 @@
-def missing_sequential_nodes(graph):
-    """given a graph with nodes [1,2,3,6,7] return [4,5]"""
-    assert isinstance(graph, nx.classes.digraph.DiGraph)
-    return list(set(range(1, max(graph.nodes()) + 1)) - set(graph.nodes()))
-
-
-def delete_rows_from_matrix(list_of_rows, matrix):
-    """we have nodes [1,2,7,11] this means nodes 3,4,5,6,8,9,10 do not exist, so we have to delete them"""
-    assert type(matrix) == list
-    assert all(isinstance(row, list) for row in matrix)
-    matrix = [row for i, row in enumerate(matrix) if i + 1 not in list_of_rows]
-    return matrix
-
-
-def save_matrix(graph, sequential_number, file_prefix='empty_prefix'):
-    """    create and save to file stoichiometric matrix    """
-    # TODO write test case
-    n_of_rows = max(graph.nodes())
-    n_of_columns = len(graph.edges())
-    matrix = [[0 for x in range(n_of_columns)] for y in range(n_of_rows)]
-
-    column = 0
-    for u, v in graph.edges():
-        matrix[u - 1][column] = -1
-        matrix[v - 1][column] = 1
-        column += 1
-
-    delete_rows_from_matrix(missing_sequential_nodes(graph), matrix)  # here was G3 and I switched to graph (may be error)
-
-
-
-    # save to file
-    f = open('data/matrix/%s_matrix_%s.txt' % (file_prefix, sequential_number), 'w')
-    f.write('matrix dimensions: %s %s' % (len(matrix), n_of_columns))
-    f.write('\n')
-    f.write('nodes: %s' % ' '.join(str(n) for n in graph.nodes()))
-    f.write('\n')
-    f.write('edges: %s' % ' '.join(str(u) + ' ' + str(v) for u, v in graph.edges()))
-    f.write('\n')
-
-    for i in matrix:
-        f.write('  '.join(str(e) for e in i))
-        f.write('\n')
-    f.close()
-    return None
 
 # TODO probably should be in another file
-def save_graphml(graph, sequential_number):
-    """
-    :param graph:
-    :param sequential_number:
-    :return:
-     graphML format doesn't like anything except strings
-     so we need to convert additional information to string
-    """
-    for node in graph.nodes():
-        # print 'test', graph.node[node]['contraction']
-        for attrib in graph.node[node]:
-            # print graph.node[node], 'before', node
-            if type(graph.node[node][attrib]) == list:
-                graph.node[node]['label'] = str(graph.node[node]['label'])
-                # print node, 'oO'
-                # print graph.node[node]
 
-    nx.write_graphml(graph, "data/graphML/_barabasi_stoichiometric_" + str(sequential_number) + ".graphml")
-    return None
 
 # TODO probably should be in another file
 def plot_graph(*argv):
