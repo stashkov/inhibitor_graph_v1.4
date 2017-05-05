@@ -16,5 +16,8 @@ for i, graph in enumerate(a.result):
     a.save_matrix(graph=graph, sequential_number=i, file_prefix='test')
     a.save_graphml(graph=graph, sequential_number=i, file_prefix='test')
 
+    # TODO stoichimetric matrix should be instance variable
+    # TODO remove node from a graph and based on that create a new instance of the class
+
 
 # a.print_dict_of_actions(a.dict_of_actions)

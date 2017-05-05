@@ -224,6 +224,7 @@ class RemoveInhibitionFromMethabolicPathway(object):
 
     @staticmethod
     def save_graphml(graph, sequential_number, file_prefix='empty_prefix'):
+        # TODO write test case
         """save networkx DiGraph as GraphML file"""
         # graphML format doesn't like anything except strings
         # so we need to convert additional information to string
