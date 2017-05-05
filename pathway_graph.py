@@ -196,7 +196,7 @@ def save_matrix(graph, sequential_number, file_prefix='empty_prefix'):
         matrix[v - 1][column] = 1
         column += 1
 
-    delete_rows_from_matrix(missing_sequential_nodes(G3), matrix)
+    delete_rows_from_matrix(missing_sequential_nodes(graph), matrix)  # here was G3 and I switched to graph (may be error)
 
 
 
@@ -246,15 +246,8 @@ def plot_graph(*argv):
     return None
 
 
-if __name__ == '__main__':
-    G = examples.generate_barabasi(7); graph_name = 'barabasi'
-    # G = examples.generate_graph()
-    # G = examples.example30(); graph_name = 'example30'
-    # G = generate_graph_test_loops()
-    start = time.time()
-
+def dictionary_of_actions(G):
     G1, G1_selfloop = generate_self_loop_graph(G)
-
     G2 = generate_inhibited_edges_graph(G, G1_selfloop)
 
     # {
@@ -310,28 +303,29 @@ if __name__ == '__main__':
         dict_test[(child, tuple(parents))] = Combi_graph(edges_to_remove_from_G2=edges_to_remove_from_G2,
                                                          node_to_add=node_to_add,
                                                          edges_to_add=edges_to_add)
+    return G1, G2, dict_test
 
+
+def merge_G1_and_G3(G1, G2, dict_test):
     # merge G1 and G3
+    result = []
     for k, v in dict_test.iteritems():
         G3_1 = copy.deepcopy(G2)
         edges_to_remove_from_G2, node_to_add, edges_to_add = v
         for u, v in edges_to_remove_from_G2:
             G3_1.remove_edge(u, v)
         z, label, info = node_to_add
-        # print z, label, info
         G3_1.add_node(z, label=label, info=info)
-
         for u, v in edges_to_add:
             G3_1.add_edge(u, v)
 
         G3 = nx.compose(G3_1, G1)  # apparently order matters
+        result.append(G3)
+        # plot_graph(G1, G2, G3_1, G3)
+    return result
 
-        save_graphml(G3, z)
-        save_matrix(G3, z, file_prefix=graph_name)
 
-    # print "Process time: %s " % (time.time() - start)
 
-    plot_graph(G1, G2, G3_1, G3)
 
 
 
