@@ -209,7 +209,7 @@ class RemoveInhibitionFromMethabolicPathway(object):
             list_of_matrices.append(matrix)
         return list_of_matrices
 
-    def save_matrix(self, file_prefix='empty_prefix'):
+    def save_stoichimetric_matrices(self, file_prefix='empty_prefix'):
         """save all stoichimetric matrices"""
         assert len(self.result) == len(self.stoichiometric_matrices)
         for i, m in enumerate(self.stoichiometric_matrices):
@@ -225,8 +225,8 @@ class RemoveInhibitionFromMethabolicPathway(object):
 
     @staticmethod
     def save_graphml(graph, sequential_number, file_prefix='empty_prefix'):
-        # TODO write test case
         """save networkx DiGraph as GraphML file"""
+        assert isinstance(graph, nx.classes.digraph.DiGraph)
         # graphML format doesn't like anything except strings
         # so we need to convert additional information to string
         for node in graph.nodes():
