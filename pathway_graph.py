@@ -212,7 +212,9 @@ class InhibitionRemovalFromMethabolicPathway(object):
         """save all stoichimetric matrices"""
         assert len(self.result) == len(self.stoichiometric_matrices)
         for i, m in enumerate(self.stoichiometric_matrices):
-            f = open('data/%s_matrix_%s.txt' % (file_prefix, i), 'w')
+            path_to_file = 'data/%s_matrix_%s.txt' % (file_prefix, i)
+            print '{:<50}{:<25}'.format(path_to_file, nx.info(self.result[i]))
+            f = open(path_to_file, 'w')
             f.write('matrix dimensions: %s %s\n' % (len(m), len(self.result[i].edges())))
             f.write('nodes: %s\n' % ' '.join(str(n) for n in self.result[i].nodes()))
             f.write('edges: %s\n' % ' '.join(str(u) + ' ' + str(v) for u, v in self.result[i].edges()))
@@ -238,8 +240,9 @@ class InhibitionRemovalFromMethabolicPathway(object):
 
         assert len(self.result) == len(self.stoichiometric_matrices)
         for i, graph in enumerate(self.result):
+            path_to_file = "data/" + file_prefix + "_" + str(i) + ".graphml"
             graph = generate_graphml(graph)
-            nx.write_graphml(graph, "data/" + file_prefix + "_" + str(i) + ".graphml")
+            nx.write_graphml(graph, path_to_file)
         return None
 
     @staticmethod
