@@ -7,18 +7,17 @@ import collections
 import itertools
 import time
 
-"""
-if u -> v is inhibited, we duplicate v to bar{v} and redirect u to bar{v}
-v and bar{v} will be connect via a directed loop
-"""
 
-
-class RemoveInhibitionFromMethabolicPathway(object):
+class InhibitionRemovalFromMethabolicPathway(object):
+    """
+    if u -> v is inhibited, we duplicate v to bar{v} and redirect u to bar{v}
+    v and bar{v} will be connect via a directed loop
+    """
     def __init__(self, G):
         self.G = G
         self.G1, self.G1_selfloop = self.generate_self_loop_graph()
         self.G2 = self.generate_inhibited_edges_graph()
-        self.dict_of_actions = self.dictionary_of_actions()
+        self.dict_of_actions = self.dictionary_of_actions()  # TODO if this is empty, there will be no result
         self.result = self.merge_G1_and_G3()
         self.stoichiometric_matrices = self.generate_stoichiometric_matrix()
 
@@ -209,11 +208,11 @@ class RemoveInhibitionFromMethabolicPathway(object):
             list_of_matrices.append(matrix)
         return list_of_matrices
 
-    def save_stoichimetric_matrices(self, file_prefix='empty_prefix'):
+    def save_stoichimetric_matrices(self, file_prefix='stoichimetric_empty_prefix'):
         """save all stoichimetric matrices"""
         assert len(self.result) == len(self.stoichiometric_matrices)
         for i, m in enumerate(self.stoichiometric_matrices):
-            f = open('data/matrix/%s_matrix_%s.txt' % (file_prefix, i), 'w')
+            f = open('data/%s_matrix_%s.txt' % (file_prefix, i), 'w')
             f.write('matrix dimensions: %s %s\n' % (len(m), len(self.result[i].edges())))
             f.write('nodes: %s\n' % ' '.join(str(n) for n in self.result[i].nodes()))
             f.write('edges: %s\n' % ' '.join(str(u) + ' ' + str(v) for u, v in self.result[i].edges()))
@@ -223,20 +222,24 @@ class RemoveInhibitionFromMethabolicPathway(object):
             f.close()
         return None
 
-    @staticmethod
-    def save_graphml(graph, sequential_number, file_prefix='empty_prefix'):
+    def save_graphml(self, file_prefix='graphML_empty_prefix'):
         """save networkx DiGraph as GraphML file"""
-        assert isinstance(graph, nx.classes.digraph.DiGraph)
-        # graphML format doesn't like anything except strings
-        # so we need to convert additional information to string
-        for node in graph.nodes():
-            # print 'test', graph.node[node]['contraction']
-            for attrib in graph.node[node]:
-                # print graph.node[node], 'before', node
-                if type(graph.node[node][attrib]) == list:
-                    graph.node[node]['label'] = str(graph.node[node]['label'])
-                    # print node, 'oO'
-                    # print graph.node[node]
+        def generate_graphml(graph):
+            # graphML format doesn't like anything except strings
+            # so we need to convert additional information to string
+            for node in graph.nodes():
+                # print 'test', graph.node[node]['contraction']
+                for attrib in graph.node[node]:
+                    # print graph.node[node], 'before', node
+                    if type(graph.node[node][attrib]) == list:
+                        graph.node[node]['label'] = str(graph.node[node]['label'])
+                        # print graph.node[node]
+            return graph
 
-        nx.write_graphml(graph, "data/graphML/" + file_prefix + "_" + str(sequential_number) + ".graphml")
+        assert len(self.result) == len(self.stoichiometric_matrices)
+        for i, graph in enumerate(self.result):
+            graph = generate_graphml(graph)
+            nx.write_graphml(graph, "data/" + file_prefix + "_" + str(i) + ".graphml")
         return None
+
+
