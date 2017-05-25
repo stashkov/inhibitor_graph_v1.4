@@ -198,7 +198,7 @@ class InhibitionRemovalFromMethabolicPathway(object):
                 column += 1
 
         list_of_matrices = list()
-        for graph in self.result:
+        for graph in self.result:  # TODO this should be moved to outer func
             n_of_rows = max(graph.nodes())
             n_of_columns = len(graph.edges())
             matrix = [[0 for _ in range(n_of_columns)] for _ in range(n_of_rows)]
@@ -242,4 +242,53 @@ class InhibitionRemovalFromMethabolicPathway(object):
             nx.write_graphml(graph, "data/" + file_prefix + "_" + str(i) + ".graphml")
         return None
 
+    @staticmethod
+    def stat_generate_stoichiometric_matrix(graph):
+        def missing_sequential_nodes(graph):
+            """given a graph with nodes [1,2,3,6,7] return [4,5]"""
+            assert isinstance(graph, nx.classes.digraph.DiGraph)
+            return list(set(range(1, max(graph.nodes()) + 1)) - set(graph.nodes()))
 
+        def delete_rows_from_matrix(list_of_rows, matrix):
+            """we have nodes [1,2,7,11] this means nodes 3,4,5,6,8,9,10 do not exist, so we have to delete them"""
+            assert type(matrix) == list
+            assert all(isinstance(row, list) for row in matrix)
+            matrix = [row for i, row in enumerate(matrix) if i + 1 not in list_of_rows]
+            return matrix
+
+        def mark_involved_in_reaction_enzymes(graph, matrix):
+            column = 0
+            for u, v in graph.edges():
+                matrix[u - 1][column] = -1
+                matrix[v - 1][column] = 1
+                column += 1
+
+        n_of_rows = max(graph.nodes())
+        n_of_columns = len(graph.edges())
+        matrix = [[0 for _ in range(n_of_columns)] for _ in range(n_of_rows)]
+
+        mark_involved_in_reaction_enzymes(graph, matrix)
+        delete_rows_from_matrix(missing_sequential_nodes(graph), matrix)
+        return matrix
+
+    @staticmethod
+    def stat_save_stoichimetric_matrix(m, file_prefix='stoichimetric_empty_prefix'):
+        f = open('data/%s_matrix_%s.txt' % (file_prefix, 0), 'w')
+        f.write('matrix dimensions: %s %s\n' % (len(m), 'empty'))
+        f.write('nodes: %s\n' % 'empty')
+        f.write('edges: %s\n' % 'empty')
+
+        for row in m:
+            f.write('%s\n' % '  '.join(str(e) for e in row))
+        f.close()
+        return None
+
+    @staticmethod
+    def stat_read_stoic_matrix(path='data/Stoic_matrix_0.txt'):
+        stoic_matrix = []
+        with open(path, 'r') as f:
+            for i in xrange(3):
+                f.next()
+            for line in f:
+                stoic_matrix.append([int(i) for i in line.strip().split('  ')])
+        return stoic_matrix
