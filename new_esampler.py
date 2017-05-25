@@ -30,7 +30,7 @@ class Sampler(object):
         for i in xrange(m):
             T2, first_i_rows, nonzero_columns, npairs, pairs, revT2 = self.prepare_vars(T, i)
 
-            print 'line {} of {} - keep: {} combinations: {}'.format(i + 1, m, nonzero_columns.shape[0], npairs),
+            # print 'line {} of {} - keep: {} combinations: {}'.format(i + 1, m, nonzero_columns.shape[0], npairs),
 
             for j, k in pairs:
                 cj, ck = self.get_cj_ck(T, j, k)
@@ -44,10 +44,10 @@ class Sampler(object):
             T = self.vstack_TandT2_based_on_selection(T, T2, nonzero_columns, selection)
             self.rev_vector = self.hstack_revandrevT2_based_on_selection(nonzero_columns, revT2, selection)
 
-            print 'new: {} total {}'.format(T.shape[0] - nonzero_columns.shape[0], T.shape[0])
+            # print 'new: {} total {}'.format(T.shape[0] - nonzero_columns.shape[0], T.shape[0])
 
         E = self.normalize_and_make_into_list(T)
-        print 'Found {} modes.'.format(len(E))
+        # print 'Found {} modes.'.format(len(E))
 
         return E
 
