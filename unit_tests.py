@@ -19,7 +19,7 @@ import examples
 
 class TestRemoveInhibitionFromMethabolicPathway(TestCase):
     def setUp(self):
-        self.lead_instance = p.RemoveInhibitionFromMethabolicPathway(examples.generate_graph())
+        self.lead_instance = p.InhibitionRemovalFromMethabolicPathway(examples.generate_graph())
         self.gold_edges = [(1, 7, {}), (2, 8, {}), (3, 9, {}), (4, 10, {}), (5, 11, {}), (6, 12, {}), (7, 1, {}),
                            (8, 2, {}), (9, 3, {}), (10, 4, {}), (11, 5, {}), (12, 6, {})]
         self.gold_nodes = [(1, {'info': 'A1', 'label': [1, True]}), (2, {'info': 'C1', 'label': [2, True]}),
