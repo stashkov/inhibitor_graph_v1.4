@@ -13,6 +13,8 @@ G = examples.example30(); graph_name = 'example30'
 # G = generate_graph_test_loops()
 
 
+nx.write_graphml(G, 'data/input_graph.graphml')
+
 # [save_graphml(G3, z) for G3 in result ]
 # save_graphml(G3, z)
 # save_stoichimetric_matrices(G3, z, file_prefix=graph_name)
