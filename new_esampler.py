@@ -27,7 +27,7 @@ class Sampler(object):
         m, n = self.matrix.shape
         T = np.hstack((self.matrix.T, np.eye(n)))
 
-        for i in range(m):
+        for i in xrange(m):
             T2, first_i_rows, nonzero_columns, npairs, pairs, revT2 = self.prepare_vars(T, i)
 
             print 'line {} of {} - keep: {} combinations: {}'.format(i + 1, m, nonzero_columns.shape[0], npairs),
@@ -72,7 +72,7 @@ class Sampler(object):
 
     def filter_rows_based_on_probability(self, T2):
         p = self.probability(T2.shape[0]) if T2.shape[0] else 0
-        return [i for i in range(T2.shape[0]) if random() <= p]
+        return [i for i in xrange(T2.shape[0]) if random() <= p]
 
     def prepare_vars(self, T, i):
         nonzero_columns = np.nonzero(T[:, 0] == 0)[0]
