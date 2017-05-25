@@ -213,7 +213,7 @@ class InhibitionRemovalFromMethabolicPathway(object):
         assert len(self.result) == len(self.stoichiometric_matrices)
         for i, m in enumerate(self.stoichiometric_matrices):
             path_to_file = 'data/%s_matrix_%s.txt' % (file_prefix, i)
-            print '{:<50}{:<25}'.format(path_to_file, nx.info(self.result[i]))
+            # print '{:<50}{:<25}'.format(path_to_file, nx.info(self.result[i]))
             f = open(path_to_file, 'w')
             f.write('matrix dimensions: %s %s\n' % (len(m), len(self.result[i].edges())))
             f.write('nodes: %s\n' % ' '.join(str(n) for n in self.result[i].nodes()))
