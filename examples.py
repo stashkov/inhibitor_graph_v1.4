@@ -22,9 +22,6 @@ def example30():
     G.add_node(16, info='Th2 related cytokines (IL-4, 10,13)')
     G.add_node(17, info='Dendritic cells')
     G.add_node(18, info='Phagocytosis')
-    G.add_node(19, info='Additional node 1')
-    G.add_node(20, info='Additional node 2')
-    G.add_node(21, info='Additional node 3')
 
     G.add_edge(1, 17, weight=0)
     G.add_edge(1, 4, weight=0)
@@ -35,7 +32,7 @@ def example30():
 
     G.add_edge(3, 7, weight=0)
 
-    G.add_edge(4, 19, weight=0)
+    G.add_edge(4, 3, weight=0)
     G.add_edge(4, 7, weight=0)
 
     G.add_edge(5, 17, weight=0)
@@ -50,14 +47,14 @@ def example30():
     G.add_edge(8, 8, weight=0)
 
     G.add_edge(9, 9, weight=0)
-    G.add_edge(9, 19, weight=0)
+    G.add_edge(9, 3, weight=0)
 
     G.add_edge(10, 7, weight=0)
 
     G.add_edge(11, 15, weight=0)
 
-    G.add_edge(12, 20, weight=0)
-    G.add_edge(12, 21, weight=0)
+    G.add_edge(12, 11, weight=0)
+    G.add_edge(12, 13, weight=0)
 
     G.add_edge(13, 14, weight=0)
     G.add_edge(13, 16, weight=0)
@@ -67,24 +64,18 @@ def example30():
 
     G.add_edge(15, 10, weight=0)
     G.add_edge(15, 17, weight=0)
-    G.add_edge(15, 20, weight=0)
+    G.add_edge(15, 11, weight=0)
     G.add_edge(15, 16, weight=1)
 
     G.add_edge(16, 15, weight=1)
     G.add_edge(16, 5, weight=1)
     G.add_edge(16, 17, weight=0)
-    G.add_edge(16, 21, weight=0)
+    G.add_edge(16, 13, weight=0)
 
     G.add_edge(17, 15, weight=0)
     G.add_edge(17, 16, weight=0)
 
     G.add_edge(18, 1, weight=1)
-
-    G.add_edge(19, 3, weight=0)
-
-    G.add_edge(20, 11, weight=0)
-
-    G.add_edge(21, 13, weight=0)
     return G
 
 
