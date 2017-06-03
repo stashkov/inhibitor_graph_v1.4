@@ -90,6 +90,7 @@ if __name__ == '__main__':
     dirpath = 'data/'
     print('Processing files in {}'.format(dirpath))
     summary = EFMSummary(dirpath)
+
     print('\nNumber of EFMs in expanded graph: {}'.format(summary.EFM_in_expanded_graph))
     summary.print_EFM_by_node()
 
