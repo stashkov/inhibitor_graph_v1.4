@@ -9,7 +9,8 @@ import copy
 # G = examples.generate_graph()
 
 
-G = examples.example30(); graph_name = 'example30'
+# G = examples.example30()
+G = examples.example31S2()
 # G = generate_graph_test_loops()
 
 
