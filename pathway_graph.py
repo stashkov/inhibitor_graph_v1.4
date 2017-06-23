@@ -3,6 +3,7 @@ import copy
 import collections
 import itertools
 
+
 class InhibitionRemovalFromMethabolicPathway(object):
     """
     if u -> v is inhibited, we duplicate v to bar{v} and redirect u to bar{v}
