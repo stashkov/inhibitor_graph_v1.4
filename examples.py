@@ -4,24 +4,24 @@ import networkx as nx
 def example30():
     G = nx.DiGraph()
 
-    G.add_node(1, info='Bacteria')
-    G.add_node(2, info='Epithelial cells')
-    G.add_node(3, info='Complement')
-    G.add_node(4, info='Ag-Ab complex')
-    G.add_node(5, info='Pro-inflamatory cytokines (IL-1,6,TNF-alpha, beta)')
-    G.add_node(6, info='Recruited PMNs')
-    G.add_node(7, info='Activated Phagocytic Cells')
-    G.add_node(8, info='Other antibodies')
-    G.add_node(9, info='Complement fixing antibodies IgG, IgM')
-    G.add_node(10, info='Macrophages')
-    G.add_node(11, info='Th1 cells')
-    G.add_node(12, info='T0 cells')
-    G.add_node(13, info='Th2 cells')
-    G.add_node(14, info='B cells')
-    G.add_node(15, info='Th1 related cytokines (IFN- Gamma, TNF-beta, IL-2)')
-    G.add_node(16, info='Th2 related cytokines (IL-4, 10,13)')
-    G.add_node(17, info='Dendritic cells')
-    G.add_node(18, info='Phagocytosis')
+    G.add_node(1, info='Bacteria', bool='Bacterial Clearance')
+    G.add_node(2, info='Epithelial cells', bool='Bacterial Persistence')
+    G.add_node(3, info='Complement', bool='Bacterial Clearance')
+    G.add_node(4, info='Ag-Ab complex', bool='Bacterial Clearance')
+    G.add_node(5, info='Pro-inflamatory cytokines (IL-1,6,TNF-alpha, beta)', bool='Bacterial Persistence')
+    G.add_node(6, info='Recruited PMNs', bool='Bacterial Clearance')
+    G.add_node(7, info='Activated Phagocytic Cells', bool='Bacterial Persistence')
+    G.add_node(8, info='Other antibodies', bool='Bacterial Clearance')
+    G.add_node(9, info='Complement fixing antibodies IgG, IgM', bool='Bacterial Clearance')
+    G.add_node(10, info='Macrophages', bool='Bacterial Clearance')
+    G.add_node(11, info='Th1 cells', bool='Bacterial Clearance')
+    G.add_node(12, info='T0 cells', bool='Bacterial Persistence')
+    G.add_node(13, info='Th2 cells', bool='Bacterial Persistence')
+    G.add_node(14, info='B cells', bool='Bacterial Persistence')
+    G.add_node(15, info='Th1 related cytokines (IFN- Gamma, TNF-beta, IL-2)', bool='Bacterial Clearance')
+    G.add_node(16, info='Th2 related cytokines (IL-4, 10,13)', bool='Bacterial Persistence')
+    G.add_node(17, info='Dendritic cells', bool='Bacterial Persistence')
+    G.add_node(18, info='Phagocytosis', bool='Bacterial Clearance')
 
     G.add_edge(1, 17, weight=0)
     G.add_edge(1, 4, weight=0)
@@ -187,11 +187,6 @@ def example32S3():
     G.add_edge(5, 9, weight=0)
     G.add_edge(5, 33, weight=0)
     G.add_edge(5, 8, weight=1)
-
-    
-
-
-
 
     return G
 
@@ -441,7 +436,8 @@ def generate_barabasi(n):
 
     percent_chance_of_inhibited_edge = 25
     for u, v, d in G.edges(data=True):
-        d['weight'] = random.choice([0]*(100-percent_chance_of_inhibited_edge) + [1]*percent_chance_of_inhibited_edge)
+        d['weight'] = random.choice(
+            [0] * (100 - percent_chance_of_inhibited_edge) + [1] * percent_chance_of_inhibited_edge)
 
     diff = list(set(G.edges()) - set(G.to_directed()))
     G = G.to_directed()
@@ -474,6 +470,7 @@ def generate_graph_test_combine():
     G.add_edge(2, 4, weight=1)
     G.add_edge(5, 4, weight=0)
     return G
+
 
 def generate_graph_test_combine1():
     G = nx.DiGraph()
