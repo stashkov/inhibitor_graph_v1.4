@@ -1,12 +1,7 @@
 import networkx as nx
-import matplotlib.pyplot as plt
-import math
-import examples
 import copy
 import collections
 import itertools
-import time
-
 
 class InhibitionRemovalFromMethabolicPathway(object):
     """
