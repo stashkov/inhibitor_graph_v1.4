@@ -6,14 +6,7 @@ import pathway_graph as ig
 import copy
 import efm_summary as efms
 import time
-
-
-def calculate_EFM():
-    dirpath = 'data/'
-    print('Processing files in {}'.format(dirpath))
-    summary = efms.EFMSummary(dirpath)
-    print('\nNumber of EFMs in expanded graph: {}'.format(summary.EFM_in_expanded_graph))
-    summary.print_EFM_by_node()
+import csv
 
 
 def write_stoichimetric_matrices_to_files():
@@ -31,19 +24,54 @@ def write_stoichimetric_matrices_to_files():
         a.save_graphml(file_prefix='GraphML_remove_node' + str(node))
 
 
+def write_results_to_a_file():
+    with open('eggs.csv', 'wb') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        spamwriter.writerow(
+            ['Node',
+             'Name',
+             'Degree Centrality',
+             'Betweenness Centrality',
+             'PageRank',
+             'Boolean Value',
+             '#EFM minus node',
+             '#EFM Total',
+             '#EFM-v / #EFM Total'])
+        for i in G.nodes():
+            spamwriter.writerow(
+                [
+                    i,
+                    G.node[i]['info'],
+                    nx.degree_centrality(G)[i],
+                    nx.betweenness_centrality(G)[i],
+                    nx.pagerank_scipy(G)[i],
+                    G.node[i]['bool'],
+                    efm_summary.EFM_by_nodes[i],
+                    efm_summary.EFM_in_expanded_graph,
+                    efms.EFMSummary.calculate_ratio(efm_summary.EFM_by_nodes[i], efm_summary.EFM_in_expanded_graph)
+                ])
+
+
 if __name__ == '__main__':
     # G = generate_graph_test_loops()
     # G = examples.generate_barabasi(7)
     # G = examples.generate_graph()
-    # G = examples.example30()
-    G = examples.example31S2()
+    G = examples.example30()
+    # G = examples.example31S2()
 
     nx.write_graphml(G, 'data/input_graph.graphml')
 
     print('Start generating stoichiometric matrices')
     start = time.time()
-    write_stoichimetric_matrices_to_files()
+    # write_stoichimetric_matrices_to_files()
     print('Stoichiometric Matrices generated in {} seconds'.format(int(time.time() - start)))
     start = time.time()
-    calculate_EFM()
+
+    dirpath = 'data/'
+    print('Processing files in {}'.format(dirpath))
+    efm_summary = efms.EFMSummary(dirpath)
+
     print('\n#EFM calculated in {} seconds'.format(int(time.time() - start)))
+
+    write_results_to_a_file()
