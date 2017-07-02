@@ -4,24 +4,24 @@ import networkx as nx
 def example30():
     G = nx.DiGraph()
 
-    G.add_node(1, info='Bacteria', bool='Bacterial Clearance')
-    G.add_node(2, info='Epithelial cells', bool='Bacterial Persistence')
-    G.add_node(3, info='Complement', bool='Bacterial Clearance')
-    G.add_node(4, info='Ag-Ab complex', bool='Bacterial Clearance')
-    G.add_node(5, info='Pro-inflamatory cytokines (IL-1,6,TNF-alpha, beta)', bool='Bacterial Persistence')
-    G.add_node(6, info='Recruited PMNs', bool='Bacterial Clearance')
-    G.add_node(7, info='Activated Phagocytic Cells', bool='Bacterial Persistence')
-    G.add_node(8, info='Other antibodies', bool='Bacterial Clearance')
-    G.add_node(9, info='Complement fixing antibodies IgG, IgM', bool='Bacterial Clearance')
-    G.add_node(10, info='Macrophages', bool='Bacterial Clearance')
-    G.add_node(11, info='Th1 cells', bool='Bacterial Clearance')
-    G.add_node(12, info='T0 cells', bool='Bacterial Persistence')
-    G.add_node(13, info='Th2 cells', bool='Bacterial Persistence')
-    G.add_node(14, info='B cells', bool='Bacterial Persistence')
-    G.add_node(15, info='Th1 related cytokines (IFN- Gamma, TNF-beta, IL-2)', bool='Bacterial Clearance')
-    G.add_node(16, info='Th2 related cytokines (IL-4, 10,13)', bool='Bacterial Persistence')
-    G.add_node(17, info='Dendritic cells', bool='Bacterial Persistence')
-    G.add_node(18, info='Phagocytosis', bool='Bacterial Clearance')
+    G.add_node(1, info='Bacteria')
+    G.add_node(2, info='Epithelial cells', isEssential='0')
+    G.add_node(3, info='Complement', isEssential='1')
+    G.add_node(4, info='Ag-Ab complex', isEssential='1')
+    G.add_node(5, info='Pro-inflamatory cytokines (IL-1,6,TNF-alpha, beta)', isEssential='0')
+    G.add_node(6, info='Recruited PMNs', isEssential='1')
+    G.add_node(7, info='Activated Phagocytic Cells', isEssential='0')
+    G.add_node(8, info='Other antibodies', isEssential='1')
+    G.add_node(9, info='Complement fixing antibodies IgG, IgM', isEssential='1')
+    G.add_node(10, info='Macrophages', isEssential='1')
+    G.add_node(11, info='Th1 cells', isEssential='1')
+    G.add_node(12, info='T0 cells', isEssential='0')
+    G.add_node(13, info='Th2 cells', isEssential='0')
+    G.add_node(14, info='B cells', isEssential='0')
+    G.add_node(15, info='Th1 related cytokines (IFN- Gamma, TNF-beta, IL-2)', isEssential='1')
+    G.add_node(16, info='Th2 related cytokines (IL-4, 10,13)', isEssential='0')
+    G.add_node(17, info='Dendritic cells', isEssential='0')
+    G.add_node(18, info='Phagocytosis')
 
     G.add_edge(1, 17, weight=0)
     G.add_edge(1, 4, weight=0)
@@ -188,6 +188,191 @@ def example32S3():
     G.add_edge(5, 33, weight=0)
     G.add_edge(5, 8, weight=1)
 
+    G.add_edge(6, 11, weight=1)
+
+    G.add_edge(7, 11, weight=1)
+
+    G.add_edge(8, 7, weight=0)
+
+    G.add_edge(9, 12, weight=0)
+    G.add_edge(9, 13, weight=0)
+
+    G.add_edge(10, 13, weight=1)
+
+    G.add_edge(11, 6, weight=0)
+    G.add_edge(11, 12, weight=0)
+    G.add_edge(11, 23, weight=0)
+    G.add_edge(11, 22, weight=0)
+
+    G.add_edge(12, 8, weight=0)
+    G.add_edge(12, 24, weight=0)
+    G.add_edge(12, 20, weight=0)
+    G.add_edge(12, 22, weight=0)
+
+    G.add_edge(13, 16, weight=0)
+
+    G.add_edge(14, 5, weight=1)
+    G.add_edge(14, 26, weight=1)
+
+    G.add_edge(15, 16, weight=1)
+
+    G.add_edge(16, 17, weight=0)
+    G.add_edge(16, 36, weight=0)
+
+    G.add_edge(17, 19, weight=0)
+    G.add_edge(17, 88, weight=0)
+    G.add_edge(17, 49, weight=0)
+
+    G.add_edge(18, 16, weight=1)
+
+    G.add_edge(19, 79, weight=1)
+    G.add_edge(19, 78, weight=1)
+    G.add_edge(19, 84, weight=1)
+    G.add_edge(19, 85, weight=1)
+    G.add_edge(19, 86, weight=1)
+
+    G.add_edge(20, 26, weight=0)
+
+    # no outgoing edges for node 21
+
+    G.add_edge(22, 70, weight=0)
+
+    G.add_edge(23, 42, weight=0)
+
+    G.add_edge(24, 42, weight=1)
+
+    G.add_edge(25, 21, weight=0)
+    G.add_edge(25, 35, weight=1)
+
+    G.add_edge(26, 14, weight=0)
+    G.add_edge(26, 25, weight=0)
+    G.add_edge(26, 39, weight=0)
+    G.add_edge(26, 40, weight=0)
+
+    G.add_edge(27, 28, weight=0)
+
+    G.add_edge(28, 29, weight=0)
+    G.add_edge(28, 30, weight=0)
+    G.add_edge(28, 38, weight=0)
+
+    G.add_edge(29, 31, weight=1)
+
+    G.add_edge(30, 61, weight=0)
+
+    G.add_edge(31, 38, weight=1)
+
+    G.add_edge(32, 38, weight=1)
+
+    G.add_edge(33, 38, weight=1)
+
+    G.add_edge(34, 25, weight=0)
+    G.add_edge(34, 40, weight=0)
+    G.add_edge(34, 41, weight=0)
+    G.add_edge(34, 46, weight=0)
+    G.add_edge(34, 52, weight=0)
+
+    G.add_edge(35, 42, weight=0)
+
+    G.add_edge(36, 42, weight=0)
+
+    G.add_edge(37, 27, weight=0)
+
+    G.add_edge(38, 81, weight=0)
+
+    G.add_edge(39, 50, weight=0)
+    G.add_edge(39, 49, weight=0)
+
+    G.add_edge(40, 45, weight=0)
+
+    G.add_edge(41, 42, weight=0)
+
+    G.add_edge(42, 43, weight=0)
+    G.add_edge(42, 37, weight=0)
+
+    G.add_edge(43, 44, weight=0)
+    G.add_edge(43, 49, weight=0)
+
+    G.add_edge(44, 54, weight=0)
+
+    G.add_edge(45, 51, weight=0)
+
+    G.add_edge(46, 25, weight=0)
+    G.add_edge(46, 47, weight=0)
+
+    G.add_edge(47, 53, weight=0)
+    G.add_edge(47, 54, weight=0)
+
+    G.add_edge(48, 54, weight=1)
+
+    G.add_edge(49, 55, weight=0)
+
+    G.add_edge(50, 56, weight=0)
+
+    G.add_edge(51, 71, weight=0)
+    G.add_edge(51, 57, weight=0)
+
+    G.add_edge(52, 56, weight=0)
+    G.add_edge(52, 56, weight=0)
+
+    G.add_edge(53, 57, weight=0)
+    G.add_edge(53, 71, weight=0)
+
+    G.add_edge(54, 58, weight=0)
+
+    G.add_edge(55, 61, weight=0)
+
+    G.add_edge(56, 63, weight=0)
+
+    G.add_edge(57, 68, weight=0)
+    G.add_edge(57, 69, weight=0)
+
+    G.add_edge(58, 64, weight=0)
+
+    G.add_edge(59, 60, weight=0)
+
+    G.add_edge(60, 55, weight=0)
+
+    G.add_edge(61, 67, weight=1)
+
+    G.add_edge(62, 68, weight=1)
+
+    G.add_edge(63, 69, weight=0)
+
+    G.add_edge(64, 70, weight=0)
+
+    G.add_edge(65, 60, weight=0)
+
+    G.add_edge(66, 60, weight=0)
+
+    G.add_edge(67, 80, weight=1)
+
+    # 68 no outgoing edges
+
+    G.add_edge(69, 72, weight=0)
+
+    G.add_edge(70, 73, weight=0)
+    G.add_edge(70, 74, weight=0)
+
+    # 71 no outgoing edgse
+
+    G.add_edge(72, 75, weight=0)
+
+    G.add_edge(73, 75, weight=0)
+
+    G.add_edge(74, 76, weight=0)
+
+    # 75 no outgoing edges
+
+    G.add_edge(76, 77, weight=0)
+
+    # 77 no outgoing edges
+
+    G.add_edge(78, 87, weight=1)
+
+    G.add_edge(79, 82, weight=1)
+    G.add_edge(79, 83, weight=1)
+
+    # 80 - 88 no outgoing edges
     return G
 
 
@@ -196,62 +381,62 @@ def example31S2():
     G.add_node(1, info='ABA')
     G.add_node(2, info='PEPC')
 
-    G.add_node(3, info='RCN1')
+    G.add_node(3, info='RCN1', isEssential='0')
 
-    G.add_node(4, info='NOS')
+    G.add_node(4, info='NOS', isEssential='0')
     G.add_node(5, info='Arg')
-    G.add_node(6, info='NIA12')
+    G.add_node(6, info='NIA12', isEssential='0')
     G.add_node(7, info='Nitrite')
     G.add_node(8, info='NADPH')
 
     G.add_node(9, info='Sph')
-    G.add_node(10, info='SphK')
+    G.add_node(10, info='SphK', isEssential='1')
     G.add_node(11, info='Malate')
-    G.add_node(12, info='NO')
-    G.add_node(13, info='S1P')
-    G.add_node(14, info='OST1')
+    G.add_node(12, info='NO', isEssential='0')
+    G.add_node(13, info='S1P', isEssential='1')
+    G.add_node(14, info='OST1', isEssential='1')
     G.add_node(15, info='GCR1')
-    G.add_node(16, info='GPA1')
-    G.add_node(17, info='AGB1')
+    G.add_node(16, info='GPA1', isEssential='1')
+    G.add_node(17, info='AGB1', isEssential='1')
 
-    G.add_node(18, info='PLC')
+    G.add_node(18, info='PLC', isEssential='0')
     G.add_node(19, info='PIP2')
     G.add_node(20, info='NAD+')
-    G.add_node(21, info='ADPRc')
+    G.add_node(21, info='ADPRc', isEssential='0')
     G.add_node(22, info='GTP')
-    G.add_node(23, info='GC')
-    G.add_node(24, info='InsPK')
+    G.add_node(23, info='GC', isEssential='0')
+    G.add_node(24, info='InsPK', isEssential='0')
 
-    G.add_node(25, info='PLD')
+    G.add_node(25, info='PLD', isEssential='1')
     G.add_node(26, info='PC')
     G.add_node(27, info='NADPH')
-    G.add_node(28, info='Atrboh')
+    G.add_node(28, info='Atrboh', isEssential='1')
     G.add_node(29, info='DAG')
-    G.add_node(30, info='InsP3')
-    G.add_node(31, info='cADPR')
-    G.add_node(32, info='cGMP')
-    G.add_node(33, info='InsP6')
+    G.add_node(30, info='InsP3', isEssential='0')
+    G.add_node(31, info='cADPR', isEssential='0')
+    G.add_node(32, info='cGMP', isEssential='0')
+    G.add_node(33, info='InsP6', isEssential='0')
     G.add_node(34, info='RAC1')
-    G.add_node(35, info='PA')
-    G.add_node(36, info='ROS')
-    G.add_node(37, info='CIS')
-    G.add_node(38, info='ABH1')
-    G.add_node(39, info='ROP2')
-    G.add_node(40, info='Actin')
-    G.add_node(41, info='ABI1')
-    G.add_node(42, info='pHc')
+    G.add_node(35, info='PA', isEssential='1')
+    G.add_node(36, info='ROS', isEssential='1')
+    G.add_node(37, info='CIS', isEssential='0')
+    G.add_node(38, info='ABH1', isEssential='0')
+    G.add_node(39, info='ROP2', isEssential='1')
+    G.add_node(40, info='Actin', isEssential='1')
+    G.add_node(41, info='ABI1', isEssential='0')
+    G.add_node(42, info='pHc', isEssential='1')
     G.add_node(43, info='ROP10')
-    G.add_node(44, info='ERA1')
-    G.add_node(45, info='CaIM')
-    G.add_node(46, info='H+ATPase')
+    G.add_node(44, info='ERA1', isEssential='0')
+    G.add_node(45, info='CaIM', isEssential='0')
+    G.add_node(46, info='H+ATPase', isEssential='0')
 
-    G.add_node(47, info='Ca2+ATPase')
-    G.add_node(48, info='Ca2+')
-    G.add_node(49, info='KEV')
-    G.add_node(50, info='Depolar')
-    G.add_node(51, info='AnionEM')
-    G.add_node(52, info='KAP')
-    G.add_node(53, info='KOUT')
+    G.add_node(47, info='Ca2+ATPase', isEssential='0')
+    G.add_node(48, info='Ca2+', isEssential='1')
+    G.add_node(49, info='KEV', isEssential='0')
+    G.add_node(50, info='Depolar', isEssential='1')
+    G.add_node(51, info='AnionEM', isEssential='1')
+    G.add_node(52, info='KAP', isEssential='0')
+    G.add_node(53, info='KOUT', isEssential='1')
     G.add_node(54, info='AtPP2C')
     G.add_node(55, info='Closure')
 
