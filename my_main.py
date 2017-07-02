@@ -24,54 +24,104 @@ def write_stoichimetric_matrices_to_files():
         a.save_graphml(file_prefix='GraphML_remove_node' + str(node))
 
 
-def write_results_to_a_file():
-    with open('eggs.csv', 'wb') as csvfile:
+def write_results_to_a_file(filename):
+    with open('data/' + filename + '.csv', 'wb') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
-                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                                quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
         spamwriter.writerow(
             ['Node',
              'Name',
              'Degree Centrality',
              'Betweenness Centrality',
              'PageRank',
-             'Boolean Value',
+             'IsSignificant',
              '#EFM minus node',
              '#EFM Total',
              '#EFM-v / #EFM Total'])
         for i in G.nodes():
-            spamwriter.writerow(
-                [
-                    i,
-                    G.node[i]['info'],
-                    nx.degree_centrality(G)[i],
-                    nx.betweenness_centrality(G)[i],
-                    nx.pagerank_scipy(G)[i],
-                    G.node[i]['bool'],
-                    efm_summary.EFM_by_nodes[i],
-                    efm_summary.EFM_in_expanded_graph,
-                    efms.EFMSummary.calculate_ratio(efm_summary.EFM_by_nodes[i], efm_summary.EFM_in_expanded_graph)
-                ])
+            if G.node[i].get('isEssential', 'no data').isdigit():
+                spamwriter.writerow(
+                    [
+                        i,
+                        G.node[i]['info'],
+                        nx.degree_centrality(G)[i],
+                        nx.betweenness_centrality(G)[i],
+                        nx.pagerank_scipy(G)[i],
+                        G.node[i].get('isEssential', 'no data'),
+                        efm_summary.EFM_by_nodes[i],
+                        efm_summary.EFM_in_expanded_graph,
+                        efms.EFMSummary.calculate_ratio(efm_summary.EFM_by_nodes[i], efm_summary.EFM_in_expanded_graph)
+                    ])
 
 
 if __name__ == '__main__':
     # G = generate_graph_test_loops()
     # G = examples.generate_barabasi(7)
     # G = examples.generate_graph()
-    G = examples.example30()
-    # G = examples.example31S2()
+    # G = examples.example30()
+    G = examples.example31S2()
 
+    dirpath = 'data/'
+
+    start = time.time()
     nx.write_graphml(G, 'data/input_graph.graphml')
 
     print('Start generating stoichiometric matrices')
-    start = time.time()
-    # write_stoichimetric_matrices_to_files()
+    write_stoichimetric_matrices_to_files()
     print('Stoichiometric Matrices generated in {} seconds'.format(int(time.time() - start)))
-    start = time.time()
 
-    dirpath = 'data/'
+    start = time.time()
     print('Processing files in {}'.format(dirpath))
     efm_summary = efms.EFMSummary(dirpath)
-
     print('\n#EFM calculated in {} seconds'.format(int(time.time() - start)))
 
-    write_results_to_a_file()
+    write_results_to_a_file('31S2')
+
+    # import pandas as pd
+    #
+    # path = 'D:\Dropbox\PyCharm_projects\inhibitor_graph_v1.4\data\eggs.csv'
+    #
+    # a = pd.read_csv(path, quotechar='"')
+    #
+    # from sklearn.metrics import roc_curve, auc
+    # import numpy as np
+    #
+    # fpr = dict()
+    # tpr = dict()
+    # roc_auc = dict()
+    #
+    # headers = a.columns.tolist()
+    # headers.remove('IsSignificant')
+    #
+    # roc_curves_list = ['Degree Centrality',
+    #                    'Betweenness Centrality',
+    #                    'PageRank',
+    #                    '#EFM-v / #EFM Total']
+    #
+    # for i, h in enumerate(roc_curves_list):
+    #     fpr[i], tpr[i], _ = roc_curve(a['IsSignificant'], a[h], pos_label=0)
+    #     roc_auc[i] = auc(fpr[i], tpr[i])
+    #
+    #
+    # import matplotlib.pyplot as plt
+    # from itertools import cycle
+    #
+    # plt.figure()
+    # lw = 4
+    #
+    #
+    # colors = cycle(['aqua', 'darkorange', 'cornflowerblue', 'red', 'green'])
+    # for i, color in zip(range(len(roc_curves_list)), colors):
+    #     plt.plot(fpr[i], tpr[i], color=color, lw=lw,
+    #              label='ROC curve of class {0} (area = {1:0.2f})'
+    #                    ''.format(roc_curves_list[i], roc_auc[i]))
+    #
+    # plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+    # plt.xlim([-0.2, 1.2])
+    # plt.ylim([-0.2, 1.2])
+    #
+    # plt.xlabel('False Positive Rate')
+    # plt.ylabel('True Positive Rate')
+    # plt.title('Receiver operating characteristic example')
+    # plt.legend(loc="lower right")
+    # plt.show()
