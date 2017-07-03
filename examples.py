@@ -82,75 +82,75 @@ def example30():
 def example32S3():
     G = nx.DiGraph()
     G.add_node(1, info='CD28')
-    G.add_node(2, info='CD4')
+    G.add_node(2, info='CD4', isEssential='0')
     G.add_node(3, info='TCRlig')
-    G.add_node(4, info='CD45')
-    G.add_node(5, info='TCRb')
-    G.add_node(6, info='SHP1')
-    G.add_node(7, info='Csk')
-    G.add_node(8, info='PAG')
-    G.add_node(9, info='Lckp2')
+    G.add_node(4, info='CD45', isEssential='0')
+    G.add_node(5, info='TCRb', isEssential='1')
+    G.add_node(6, info='SHP1', isEssential='0')
+    G.add_node(7, info='Csk', isEssential='0')
+    G.add_node(8, info='PAG', isEssential='0')
+    G.add_node(9, info='Lckp2', isEssential='0')
     G.add_node(10, info='CbIb')
-    G.add_node(11, info='Lckp1')
-    G.add_node(12, info='Fyn')
-    G.add_node(13, info='PI3K')
-    G.add_node(14, info='cCBIp1')
+    G.add_node(11, info='Lckp1', isEssential='0')
+    G.add_node(12, info='Fyn', isEssential='1')
+    G.add_node(13, info='PI3K', isEssential='1')
+    G.add_node(14, info='cCbIp1')
     G.add_node(15, info='SHIP-1')
-    G.add_node(16, info='PIP3')
-    G.add_node(17, info='PDK1')
+    G.add_node(16, info='PIP3', isEssential='1')
+    G.add_node(17, info='PDK1', isEssential='1')
     G.add_node(18, info='PTEN')
     G.add_node(19, info='PKB')
-    G.add_node(20, info='TCRp')
+    G.add_node(20, info='TCRp', isEssential='1')
     G.add_node(21, info='SHP2')
-    G.add_node(22, info='ABI')
-    G.add_node(23, info='Rlk')
-    G.add_node(24, info='cCbIp2')
-    G.add_node(25, info='Gab2')
-    G.add_node(26, info='ZAP70')
-    G.add_node(27, info='Ca')
-    G.add_node(28, info='CaM')
+    G.add_node(22, info='ABI', isEssential='1')
+    G.add_node(23, info='Rlk', isEssential='0')
+    G.add_node(24, info='cCbIp2', isEssential='0')
+    G.add_node(25, info='Gab2', isEssential='0')
+    G.add_node(26, info='ZAP70', isEssential='1')
+    G.add_node(27, info='Ca', isEssential='1')
+    G.add_node(28, info='CaM', isEssential='1')
     G.add_node(29, info='CaMK4')
-    G.add_node(30, info='CaMK2')
+    G.add_node(30, info='CaMK2', isEssential='1')
     G.add_node(31, info='cabin1')
     G.add_node(32, info='AKAP79')
     G.add_node(33, info='Calpr1')
-    G.add_node(34, info='LAT')
-    G.add_node(35, info='SLP76')
-    G.add_node(36, info='Itk')
-    G.add_node(37, info='IP3')
+    G.add_node(34, info='LAT', isEssential='1')
+    G.add_node(35, info='SLP76', isEssential='1')
+    G.add_node(36, info='Itk', isEssential='0')
+    G.add_node(37, info='IP3', isEssential='1')
     G.add_node(38, info='Calcln')
-    G.add_node(39, info='Vav1')
-    G.add_node(40, info='sh3pb2')
-    G.add_node(41, info='PLCgb')
-    G.add_node(42, info='PLCga')
-    G.add_node(43, info='DAG')
-    G.add_node(44, info='RasGRP1')
-    G.add_node(45, info='Vav3')
-    G.add_node(46, info='Grb2')
-    G.add_node(47, info='Sos')
+    G.add_node(39, info='Vav1', isEssential='1')
+    G.add_node(40, info='sh3bp2', isEssential='0')
+    G.add_node(41, info='PLCgb', isEssential='1')
+    G.add_node(42, info='PLCga', isEssential='1')
+    G.add_node(43, info='DAG', isEssential='1')
+    G.add_node(44, info='RasGRP1', isEssential='0')
+    G.add_node(45, info='Vav3', isEssential='0')
+    G.add_node(46, info='Grb2', isEssential='0')
+    G.add_node(47, info='Sos', isEssential='0')
     G.add_node(48, info='GAPs')
-    G.add_node(49, info='PKCth')
-    G.add_node(50, info='Rac1p1')
-    G.add_node(51, info='Rac1p2')
-    G.add_node(52, info='HPK1')
-    G.add_node(53, info='Cdc42')
-    G.add_node(54, info='Ras')
-    G.add_node(55, info='Ikkg')
-    G.add_node(56, info='MLK3')
-    G.add_node(57, info='MEKK1')
-    G.add_node(58, info='Raf')
+    G.add_node(49, info='PKCth', isEssential='1')
+    G.add_node(50, info='Rac1p1', isEssential='0')
+    G.add_node(51, info='Rac1p2', isEssential='0')
+    G.add_node(52, info='HPK1', isEssential='0')
+    G.add_node(53, info='Cdc42', isEssential='0')
+    G.add_node(54, info='Ras', isEssential='0')
+    G.add_node(55, info='Ikkg', isEssential='1')
+    G.add_node(56, info='MLK3', isEssential='0')
+    G.add_node(57, info='MEKK1', isEssential='0')
+    G.add_node(58, info='Raf', isEssential='0')
     G.add_node(59, info='CARD11')
-    G.add_node(60, info='CARD11a')
-    G.add_node(61, info='Ikkab')
+    G.add_node(60, info='CARD11a', isEssential='1')
+    G.add_node(61, info='Ikkab', isEssential='1')
     G.add_node(62, info='Gadd45')
     G.add_node(63, info='MKK4')
-    G.add_node(64, info='MEK')
+    G.add_node(64, info='MEK', isEssential='0')
     G.add_node(65, info='Bcl10')
     G.add_node(66, info='Malt1')
     G.add_node(67, info='IkB')
     G.add_node(68, info='p38')
     G.add_node(69, info='JNK')
-    G.add_node(70, info='ERK')
+    G.add_node(70, info='ERK', isEssential='0')
     G.add_node(71, info='SRE')
     G.add_node(72, info='Jun')
     G.add_node(73, info='Fos')
@@ -170,6 +170,8 @@ def example32S3():
     G.add_node(86, info='FKHR')
     G.add_node(87, info='BclXL')
     G.add_node(88, info='p70S6K')
+    G.add_node(132, info='Gads', isEssential='1')
+    G.add_node(133, info='DGK', isEssential='0')
 
     G.add_edge(1, 10, weight=1)
     G.add_edge(1, 39, weight=0)
@@ -185,7 +187,7 @@ def example32S3():
     G.add_edge(5, 20, weight=0)
     G.add_edge(5, 12, weight=0)
     G.add_edge(5, 9, weight=0)
-    G.add_edge(5, 33, weight=0)
+    G.add_edge(5, 133, weight=0)
     G.add_edge(5, 8, weight=1)
 
     G.add_edge(6, 11, weight=1)
@@ -373,6 +375,318 @@ def example32S3():
     G.add_edge(79, 83, weight=1)
 
     # 80 - 88 no outgoing edges
+
+    G.add_edge(132, 35, weight=0)
+    G.add_edge(132, 25, weight=0)
+
+    G.add_edge(133, 43, weight=1)
+
+    return G
+
+
+def example32S4():
+    G = nx.DiGraph()
+    G.add_node(1, info='CD28')
+    G.add_node(2, info='CD4', isEssential='0')
+    G.add_node(3, info='TCRlig')
+    G.add_node(4, info='CD45', isEssential='0')
+    G.add_node(5, info='TCRb', isEssential='1')
+    G.add_node(6, info='SHP1', isEssential='0')
+    G.add_node(7, info='Csk', isEssential='0')
+    G.add_node(8, info='PAG', isEssential='0')
+    G.add_node(9, info='Lckp2', isEssential='0')
+    G.add_node(10, info='CbIb')
+    G.add_node(11, info='Lckp1', isEssential='0')
+    G.add_node(12, info='Fyn', isEssential='1')
+    G.add_node(13, info='PI3K', isEssential='1')
+    G.add_node(14, info='cCbIp1', isEssential='0')
+    G.add_node(15, info='SHIP-1')
+    G.add_node(16, info='PIP3', isEssential='1')
+    G.add_node(17, info='PDK1')
+    G.add_node(18, info='PTEN')
+    G.add_node(19, info='PKB')
+    G.add_node(20, info='TCRp', isEssential='1')
+    G.add_node(21, info='SHP2')
+    G.add_node(22, info='ABI', isEssential='1')
+    G.add_node(23, info='Rlk', isEssential='0')
+    G.add_node(24, info='cCbIp2', isEssential='0')
+    G.add_node(25, info='Gab2', isEssential='0')
+    G.add_node(26, info='ZAP70', isEssential='1')
+    G.add_node(27, info='Ca')
+    G.add_node(28, info='CaM')
+    G.add_node(29, info='CaMK4')
+    G.add_node(30, info='CaMK2')
+    G.add_node(31, info='cabin1')
+    G.add_node(32, info='AKAP79')
+    G.add_node(33, info='Calpr1')
+    G.add_node(34, info='LAT', isEssential='1')
+    G.add_node(35, info='SLP76', isEssential='1')
+    G.add_node(36, info='Itk', isEssential='0')
+    G.add_node(37, info='IP3')
+    G.add_node(38, info='Calcln')
+    G.add_node(39, info='Vav1', isEssential='1')
+    G.add_node(40, info='sh3bp2', isEssential='0')
+    G.add_node(41, info='PLCgb', isEssential='1')
+    G.add_node(42, info='PLCga', isEssential='1')
+    G.add_node(43, info='DAG', isEssential='1')
+    G.add_node(44, info='RasGRP1', isEssential='1')
+    G.add_node(45, info='Vav3', isEssential='0')
+    G.add_node(46, info='Grb2', isEssential='1')
+    G.add_node(47, info='Sos', isEssential='1')
+    G.add_node(48, info='GAPs')
+    G.add_node(49, info='PKCth')
+    G.add_node(50, info='Rac1p1', isEssential='0')
+    G.add_node(51, info='Rac1p2', isEssential='0')
+    G.add_node(52, info='HPK1', isEssential='0')
+    G.add_node(53, info='Cdc42', isEssential='0')
+    G.add_node(54, info='Ras', isEssential='1')
+    G.add_node(55, info='Ikkg')
+    G.add_node(56, info='MLK3', isEssential='0')
+    G.add_node(57, info='MEKK1', isEssential='0')
+    G.add_node(58, info='Raf', isEssential='1')
+    G.add_node(59, info='CARD11')
+    G.add_node(60, info='CARD11a')
+    G.add_node(61, info='Ikkab')
+    G.add_node(62, info='Gadd45')
+    G.add_node(63, info='MKK4', isEssential='0')
+    G.add_node(64, info='MEK', isEssential='1')
+    G.add_node(65, info='Bcl10')
+    G.add_node(66, info='Malt1')
+    G.add_node(67, info='IkB')
+    G.add_node(68, info='p38')
+    G.add_node(69, info='JNK', isEssential='1')
+    G.add_node(70, info='ERK', isEssential='1')
+    G.add_node(71, info='SRE')
+    G.add_node(72, info='Jun', isEssential='1')
+    G.add_node(73, info='Fos', isEssential='1')
+    G.add_node(74, info='Rsk')
+    G.add_node(75, info='AP1')
+    G.add_node(76, info='CREB')
+    G.add_node(77, info='CRE')
+
+    G.add_node(78, info='BAD')
+    G.add_node(79, info='GSK3')
+    G.add_node(80, info='NFkB')
+    G.add_node(81, info='NFAT')
+    G.add_node(82, info='bcat')
+    G.add_node(83, info='Cyc1')
+    G.add_node(84, info='p21c')
+    G.add_node(85, info='p27k')
+    G.add_node(86, info='FKHR')
+    G.add_node(87, info='BclXL')
+    G.add_node(88, info='p70S6K')
+
+    G.add_node(132, info='Gads', isEssential='1')
+    G.add_node(133, info='DGK', isEssential='0')
+
+    G.add_edge(1, 10, weight=1)
+    G.add_edge(1, 39, weight=0)
+    G.add_edge(1, 13, weight=0)
+
+    G.add_edge(2, 11, weight=0)
+
+    G.add_edge(3, 5, weight=0)
+
+    G.add_edge(4, 11, weight=0)
+    G.add_edge(4, 12, weight=0)
+
+    G.add_edge(5, 20, weight=0)
+    G.add_edge(5, 12, weight=0)
+    G.add_edge(5, 9, weight=0)
+    G.add_edge(5, 133, weight=0)
+    G.add_edge(5, 8, weight=1)
+
+    G.add_edge(6, 11, weight=1)
+
+    G.add_edge(7, 11, weight=1)
+
+    G.add_edge(8, 7, weight=0)
+
+    G.add_edge(9, 12, weight=0)
+    G.add_edge(9, 13, weight=0)
+
+    G.add_edge(10, 13, weight=1)
+
+    G.add_edge(11, 6, weight=0)
+    G.add_edge(11, 12, weight=0)
+    G.add_edge(11, 23, weight=0)
+    G.add_edge(11, 22, weight=0)
+
+    G.add_edge(12, 8, weight=0)
+    G.add_edge(12, 24, weight=0)
+    G.add_edge(12, 20, weight=0)
+    G.add_edge(12, 22, weight=0)
+
+    G.add_edge(13, 16, weight=0)
+
+    G.add_edge(14, 5, weight=1)
+    G.add_edge(14, 26, weight=1)
+
+    G.add_edge(15, 16, weight=1)
+
+    G.add_edge(16, 17, weight=0)
+    G.add_edge(16, 36, weight=0)
+
+    G.add_edge(17, 19, weight=0)
+    G.add_edge(17, 88, weight=0)
+    G.add_edge(17, 49, weight=0)
+
+    G.add_edge(18, 16, weight=1)
+
+    G.add_edge(19, 79, weight=1)
+    G.add_edge(19, 78, weight=1)
+    G.add_edge(19, 84, weight=1)
+    G.add_edge(19, 85, weight=1)
+    G.add_edge(19, 86, weight=1)
+
+    G.add_edge(20, 26, weight=0)
+
+    # no outgoing edges for node 21
+
+    G.add_edge(22, 70, weight=0)
+
+    G.add_edge(23, 42, weight=0)
+
+    G.add_edge(24, 42, weight=1)
+
+    G.add_edge(25, 21, weight=0)
+    G.add_edge(25, 35, weight=1)
+
+    G.add_edge(26, 14, weight=0)
+    G.add_edge(26, 25, weight=0)
+    G.add_edge(26, 39, weight=0)
+    G.add_edge(26, 40, weight=0)
+
+    G.add_edge(27, 28, weight=0)
+
+    G.add_edge(28, 29, weight=0)
+    G.add_edge(28, 30, weight=0)
+    G.add_edge(28, 38, weight=0)
+
+    G.add_edge(29, 31, weight=1)
+
+    G.add_edge(30, 61, weight=0)
+
+    G.add_edge(31, 38, weight=1)
+
+    G.add_edge(32, 38, weight=1)
+
+    G.add_edge(33, 38, weight=1)
+
+    G.add_edge(34, 25, weight=0)
+    G.add_edge(34, 40, weight=0)
+    G.add_edge(34, 41, weight=0)
+    G.add_edge(34, 46, weight=0)
+    G.add_edge(34, 52, weight=0)
+
+    G.add_edge(35, 42, weight=0)
+
+    G.add_edge(36, 42, weight=0)
+
+    G.add_edge(37, 27, weight=0)
+
+    G.add_edge(38, 81, weight=0)
+
+    G.add_edge(39, 50, weight=0)
+    G.add_edge(39, 49, weight=0)
+
+    G.add_edge(40, 45, weight=0)
+
+    G.add_edge(41, 42, weight=0)
+
+    G.add_edge(42, 43, weight=0)
+    G.add_edge(42, 37, weight=0)
+
+    G.add_edge(43, 44, weight=0)
+    G.add_edge(43, 49, weight=0)
+
+    G.add_edge(44, 54, weight=0)
+
+    G.add_edge(45, 51, weight=0)
+
+    G.add_edge(46, 25, weight=0)
+    G.add_edge(46, 47, weight=0)
+
+    G.add_edge(47, 53, weight=0)
+    G.add_edge(47, 54, weight=0)
+
+    G.add_edge(48, 54, weight=1)
+
+    G.add_edge(49, 55, weight=0)
+
+    G.add_edge(50, 56, weight=0)
+
+    G.add_edge(51, 71, weight=0)
+    G.add_edge(51, 57, weight=0)
+
+    G.add_edge(52, 56, weight=0)
+    G.add_edge(52, 56, weight=0)
+
+    G.add_edge(53, 57, weight=0)
+    G.add_edge(53, 71, weight=0)
+
+    G.add_edge(54, 58, weight=0)
+
+    G.add_edge(55, 61, weight=0)
+
+    G.add_edge(56, 63, weight=0)
+
+    G.add_edge(57, 68, weight=0)
+    G.add_edge(57, 69, weight=0)
+
+    G.add_edge(58, 64, weight=0)
+
+    G.add_edge(59, 60, weight=0)
+
+    G.add_edge(60, 55, weight=0)
+
+    G.add_edge(61, 67, weight=1)
+
+    G.add_edge(62, 68, weight=1)
+
+    G.add_edge(63, 69, weight=0)
+
+    G.add_edge(64, 70, weight=0)
+
+    G.add_edge(65, 60, weight=0)
+
+    G.add_edge(66, 60, weight=0)
+
+    G.add_edge(67, 80, weight=1)
+
+    # 68 no outgoing edges
+
+    G.add_edge(69, 72, weight=0)
+
+    G.add_edge(70, 73, weight=0)
+    G.add_edge(70, 74, weight=0)
+
+    # 71 no outgoing edgse
+
+    G.add_edge(72, 75, weight=0)
+
+    G.add_edge(73, 75, weight=0)
+
+    G.add_edge(74, 76, weight=0)
+
+    # 75 no outgoing edges
+
+    G.add_edge(76, 77, weight=0)
+
+    # 77 no outgoing edges
+
+    G.add_edge(78, 87, weight=1)
+
+    G.add_edge(79, 82, weight=1)
+    G.add_edge(79, 83, weight=1)
+
+    # 80 - 88 no outgoing edges
+
+    G.add_edge(132, 35, weight=0)
+    G.add_edge(132, 25, weight=0)
+
+    G.add_edge(133, 43, weight=1)
+
     return G
 
 
