@@ -75,53 +75,5 @@ if __name__ == '__main__':
     efm_summary = efms.EFMSummary(dirpath)
     print('\n#EFM calculated in {} seconds'.format(int(time.time() - start)))
 
-    write_results_to_a_file('31S2')
+    write_results_to_a_file()
 
-    # import pandas as pd
-    #
-    # path = 'D:\Dropbox\PyCharm_projects\inhibitor_graph_v1.4\data\eggs.csv'
-    #
-    # a = pd.read_csv(path, quotechar='"')
-    #
-    # from sklearn.metrics import roc_curve, auc
-    # import numpy as np
-    #
-    # fpr = dict()
-    # tpr = dict()
-    # roc_auc = dict()
-    #
-    # headers = a.columns.tolist()
-    # headers.remove('IsSignificant')
-    #
-    # roc_curves_list = ['Degree Centrality',
-    #                    'Betweenness Centrality',
-    #                    'PageRank',
-    #                    '#EFM-v / #EFM Total']
-    #
-    # for i, h in enumerate(roc_curves_list):
-    #     fpr[i], tpr[i], _ = roc_curve(a['IsSignificant'], a[h], pos_label=0)
-    #     roc_auc[i] = auc(fpr[i], tpr[i])
-    #
-    #
-    # import matplotlib.pyplot as plt
-    # from itertools import cycle
-    #
-    # plt.figure()
-    # lw = 4
-    #
-    #
-    # colors = cycle(['aqua', 'darkorange', 'cornflowerblue', 'red', 'green'])
-    # for i, color in zip(range(len(roc_curves_list)), colors):
-    #     plt.plot(fpr[i], tpr[i], color=color, lw=lw,
-    #              label='ROC curve of class {0} (area = {1:0.2f})'
-    #                    ''.format(roc_curves_list[i], roc_auc[i]))
-    #
-    # plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
-    # plt.xlim([-0.2, 1.2])
-    # plt.ylim([-0.2, 1.2])
-    #
-    # plt.xlabel('False Positive Rate')
-    # plt.ylabel('True Positive Rate')
-    # plt.title('Receiver operating characteristic example')
-    # plt.legend(loc="lower right")
-    # plt.show()
