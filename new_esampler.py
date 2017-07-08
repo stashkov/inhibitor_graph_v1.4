@@ -9,6 +9,7 @@ from scipy.io import savemat
 
 class Sampler(object):
     """ Implements an elementary mode sampler.
+    This is a refactored and slightly modified version of https://code.google.com/archive/p/emsampler/
     Inputs:
         matrix (stoichiometric matrix),
         rev_vector (reversibility vector),

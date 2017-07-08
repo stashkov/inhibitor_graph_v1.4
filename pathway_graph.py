@@ -169,7 +169,7 @@ class InhibitionRemovalFromMethabolicPathway(object):
             for u, v in edges_to_add:
                 G3_1.add_edge(u, v)
 
-            G3 = nx.compose(G3_1, self.G1)  # apparently order matters
+            G3 = nx.compose(G3_1, self.G1)  # order matters
             result.append(G3)
         return result
 
