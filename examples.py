@@ -2,6 +2,7 @@ import networkx as nx
 
 
 def example30():
+    """Graph S1"""
     G = nx.DiGraph()
 
     G.add_node(1, info='Bacteria')
@@ -80,6 +81,7 @@ def example30():
 
 
 def example32S3():
+    """Graph S3"""
     G = nx.DiGraph()
     G.add_node(1, info='CD28')
     G.add_node(2, info='CD4', isEssential='0')
@@ -385,6 +387,7 @@ def example32S3():
 
 
 def example32S4():
+    """Graph S4"""
     G = nx.DiGraph()
     G.add_node(1, info='CD28')
     G.add_node(2, info='CD4', isEssential='0')
@@ -691,6 +694,7 @@ def example32S4():
 
 
 def example31S2():
+    """Graph S2"""
     G = nx.DiGraph()
     G.add_node(1, info='ABA')
     G.add_node(2, info='PEPC')
@@ -927,6 +931,7 @@ def composite_graph_1():
 
 
 def generate_barabasi(n):
+    """Generates a random (with seed) barabasi graph with n nodes"""
     import random
     G = nx.barabasi_albert_graph(n, 2, seed=14)
     # set info ( information about a node )
@@ -946,6 +951,7 @@ def generate_barabasi(n):
 
 
 def generate_graph():
+    """Simple Graph for testing purposes"""
     G = nx.DiGraph()
     G.add_edge(1, 2, weight=0)
     G.add_edge(3, 2, weight=1)
@@ -963,6 +969,7 @@ def generate_graph():
 
 
 def generate_graph_test_combine():
+    """Simple Graph for testing purposes"""
     G = nx.DiGraph()
     G.add_edge(1, 2, weight=0)
     G.add_edge(3, 2, weight=1)
@@ -972,5 +979,6 @@ def generate_graph_test_combine():
 
 
 def generate_graph_test_combine1():
+    """Simple Graph for testing purposes"""
     G = nx.DiGraph()
     G.add_edge(3, 2, weight=1)
