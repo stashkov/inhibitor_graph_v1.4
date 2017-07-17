@@ -58,8 +58,10 @@ if __name__ == '__main__':
     # G = generate_graph_test_loops()
     # G = examples.generate_barabasi(7)
     # G = examples.generate_graph()
-    # G = examples.example30()
-    G = examples.example31S2()
+    G = examples.example30()
+    # G = examples.example31S2()
+    # G = examples.example32S3()
+    # G = examples.example32S4()
 
     dirpath = 'data/'
 
@@ -75,5 +77,5 @@ if __name__ == '__main__':
     efm_summary = efms.EFMSummary(dirpath)
     print('\n#EFM calculated in {} seconds'.format(int(time.time() - start)))
 
-    write_results_to_a_file()
+    write_results_to_a_file('S1')
 
