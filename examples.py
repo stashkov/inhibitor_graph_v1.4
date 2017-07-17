@@ -43,6 +43,7 @@ def example30():
     G.add_edge(6, 7, weight=0)
 
     G.add_edge(7, 5, weight=0)
+    G.add_edge(7, 18, weight=0)
 
     G.add_edge(8, 4, weight=0)
     G.add_edge(8, 8, weight=0)
